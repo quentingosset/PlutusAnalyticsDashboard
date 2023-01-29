@@ -1,0 +1,35 @@
+{
+   "action": {
+      "default_popup": "popup.html"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "content_scripts": [ {
+      "js": [ "content.js" ],
+      "matches": [ "https://dex.plutus.it/dashboard/*" ]
+   } ],
+   "web_accessible_resources": [
+      {
+         "resources": ["index.html" ],
+         "matches": ["https://*/*", "http://*/*"]
+      }
+   ],
+   "host_permissions": [
+      "https://dex.plutus.it/dashboard/*"
+   ],
+   "description": "New graphical interface for Plutus with more features.",
+   "icons": {
+      "128": "/icon/icon128.png",
+      "16": "/icon/icon16.png",
+      "19": "/icon/icon19.png",
+      "32": "/icon/icon32.png",
+      "38": "/icon/icon38.png",
+      "48": "/icon/icon48.png"
+   },
+   "manifest_version": 3,
+   "name": "Plutus Analytics Dashboard",
+   "permissions": [ "storage" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.0.0"
+}

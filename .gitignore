@@ -1,0 +1,11 @@
+node_modules
+.DS_Store
+dist_test
+dist-ssr
+*.local
+dist
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/PlutusAnalyticsDashboard.iml
+/.idea/vcs.xml
+/.idea/workspace.xml

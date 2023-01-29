@@ -1,0 +1,22 @@
+{
+  "ISOAccountCurrencyCode": "978",
+  "FriendlyName": "",
+  "AccountStatus": "Live",
+  "AccountBalance": 1254,
+  "DebitHoldBalance": 910,
+  "CreditHoldBalance": 0,
+  "EnvelopeHoldBalance": 0,
+  "AvailableBalance": 344,
+  "AccountActivatedDate": "2022-05-04T11:44:29.213",
+  "AccountIdentifier": 1,
+  "AccountNumber": "",
+  "SortCode": "000000",
+  "IBAN": "",
+  "BIC": "",
+  "Description": "Success",
+  "ResponseCode": "000",
+  "ResponseDateTime": "2022-12-10T00:03:07.334",
+  "ClientRequestReference": "",
+  "RequestID": 1,
+  "currency": "EUR"
+}
