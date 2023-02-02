@@ -2,6 +2,11 @@
 
 New graphical interface for Plutus with more features.
 
+
+Chrome extension: https://chrome.google.com/webstore/detail/plutus-analytics-dashboar/goaipcbpmkahfbcdlpmoamemjhjlpcbm
+
+Firefox extension: https://addons.mozilla.org/fr/firefox/addon/plutus-analytics-dashboard/
+
 ## Project setup
 ```
 npm install
