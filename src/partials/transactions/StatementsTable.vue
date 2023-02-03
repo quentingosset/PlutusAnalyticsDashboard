@@ -30,6 +30,9 @@
       <li class="m-1">
         <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-slate-200 hover:border-slate-300 shadow-sm bg-white text-slate-500 duration-150 ease-in-out" @click="sortBy" data-sorted="load" data-sorted-active="false">Load</button>
       </li>
+      <li class="m-1">
+        <button class="inline-flex items-center justify-center text-sm font-medium leading-5 rounded-full px-3 py-1 border border-slate-200 hover:border-slate-300 shadow-sm bg-white text-slate-500 duration-150 ease-in-out" @click="sortBy" data-sorted="refunded" data-sorted-active="false">Refunded</button>
+      </li>
     </ul>
     <Datepicker v-model:date-start="dateStart" v-model:date-end="dateEnd" @refreshFilter="refreshFilter"/>
   </div>

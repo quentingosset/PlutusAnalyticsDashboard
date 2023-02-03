@@ -450,13 +450,6 @@ export default {
       // Then specify how you want your dates to be formatted
       return date.format('D MMMM YYYY, HH:mm');
     },
-    formatCardStatus() {
-      if(this.cardStatus === 1){
-        return '<div class="flex items-center whitespace-nowrap"><div class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></div><div class="text-sm font-medium text-slate-800">Active</div></div>';
-      } else{
-
-      }
-    },
     expirationSubscription(){
       const dateExpiration = dayjs(this.subscriptionEnd);
       const dateNow = dayjs();
