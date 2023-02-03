@@ -245,15 +245,15 @@ export default {name: 'StatementsTableItem', components: {
     const amountColor = () => {
       switch (statement.value.type) {
         case 'DEPOSIT_FUNDS_RECEIVED':
-          return 'text-slate-500'
         case '29':
+        case '35':
+        case '45':
           return 'text-emerald-600'
+        case 'LOAD_PLUTUS_CARD_FROM_CJ_WALLET':
         case '0':
         case '5':
         case '31':
           return 'text-rose-600'
-        case '45':
-          return 'text-slate-500'
         default:
           return 'text-slate-500'
       }
@@ -294,7 +294,12 @@ export default {name: 'StatementsTableItem', components: {
     }
 
     const initStatus = () => {
-      if (statement.value.type === 'REBATE_BONUS') {
+      if(statement.value.type === 'LOAD_PLUTUS_CARD_FROM_CJ_WALLET' || statement.value.type === 'DEPOSIT_FUNDS_RECEIVED') {
+        statement.value.status.value = 'no_reward';
+        statement.value.status.text = 'No Reward';
+        statement.value.status.style = 'bg-slate-100 text-slate-600';
+        sortedKeyword.value.set('no_reward');
+      } else if (statement.value.type === 'REBATE_BONUS') {
         sortedKeyword.value.set('bonus');
         statement.value.status.value = 'bonus';
         statement.value.status.text = 'Bonus';
@@ -333,7 +338,7 @@ export default {name: 'StatementsTableItem', components: {
         statement.value.status.style = 'bg-emerald-100 text-emerald-600';
         sortedKeyword.value.set('rewarded');
         sortedKeyword.value.set('completed');
-      } else if (statement.value.type === '45') {
+      } else if (statement.value.type === '45' || statement.value.type === '35') {
         statement.value.status.value = 'refunded';
         statement.value.status.text = 'Refunded';
         statement.value.status.style = 'bg-slate-100 text-slate-600';
@@ -385,18 +390,16 @@ export default {name: 'StatementsTableItem', components: {
       switch (type) {
         case "29":
         case "LOAD_PLUTUS_CARD_FROM_CJ_WALLET":
-          sortedKeyword.value.set('load');
           return Image29
         case "DEPOSIT_FUNDS_RECEIVED":
-          sortedKeyword.value.set('load');
           return ImageDepositFundsReceived
         case "5":
-          sortedKeyword.value.set('declined');
           return ImageDeclined
         case "0":
         case "31":
           return ImageShop
-        case "45": // refund
+        case "45":
+        case "35":
           return ImageShop
         case "REBATE_BONUS":
           return ImageGift
