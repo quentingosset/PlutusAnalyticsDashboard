@@ -1,0 +1,21 @@
+{
+  "data": {
+    "pluton_withdraw_requests": [
+      {
+        "id": "3544376f-83ed-4121-acb9-8a2588c386ad",
+        "address": "0x07cfcc9c3297536502c788578f7c42dcc2c6cc2f",
+        "amount": 204.76000000,
+        "status": "PENDING",
+        "payout_destination_type": "crypto_wallet",
+        "created_at": "2023-02-07T17:43:14.19+00:00",
+        "clear_junction_transfer": {
+          "amount": 3.00,
+          "currency": "EUR",
+          "__typename": "clear_junction_transfers"
+        },
+        "card_transfer": null,
+        "__typename": "pluton_withdraw_requests"
+      }
+    ]
+  }
+}

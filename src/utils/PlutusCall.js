@@ -196,6 +196,9 @@ export async function getStatementsAndRewards(){
         if(value.type === "LOAD_PLUTUS_CARD_FROM_CJ_WALLET"){
             value.description = "Plutus - Unload Plutus account";
         }
+        if(value.type === "PLUTUS_WALLET_WITHDRAW_FEE"){
+            value.description = "Plutus - PLU Withdraw fee";
+        }
         return value;
     });
     // BONUS = PLUTON TRANSACTION NOT A STATEMENT

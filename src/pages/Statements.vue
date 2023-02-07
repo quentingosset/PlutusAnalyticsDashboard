@@ -336,7 +336,12 @@ export default {
 
       statements.value = value;
 
-      let spendingMonthlyLimits = value.filter((value) => {return (dayjs(value.date).isBetween(dayjs().subtract(1, 'month'),dayjs(),null, '[]') && value.type !== "29" && value.type !== "LOAD_PLUTUS_CARD_FROM_CJ_WALLET" && value.type !== "DEPOSIT_FUNDS_RECEIVED")});
+      let spendingMonthlyLimits = value.filter((value) => {return (dayjs(value.date).isBetween(dayjs().subtract(1, 'month'),dayjs(),null, '[]')
+          && value.type !== "29"
+          && value.type !== "LOAD_PLUTUS_CARD_FROM_CJ_WALLET"
+          && value.type !== "DEPOSIT_FUNDS_RECEIVED"
+          && value.type !== "PLUTUS_WALLET_WITHDRAW_FEE"
+      )});
       spendingMonthlyLimit.value = spendingMonthlyLimits.reduce((sum, transaction) => {
         return sum + (transaction.amount / 100);
       },0);
