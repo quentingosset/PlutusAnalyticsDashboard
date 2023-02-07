@@ -9,6 +9,18 @@
     },
     "transactions_view": [
       {
+        "id": "5d966917-7c52-4363-9559-a9456b4c8224",
+        "model": "FiatTransaction",
+        "user_id": "user_id",
+        "currency": "EUR",
+        "amount": -300,
+        "date": "2023-02-07T17:43:14.19978+00:00",
+        "type": "PLUTUS_WALLET_WITHDRAW_FEE",
+        "is_debit": null,
+        "description": null,
+        "__typename": "transactions_view"
+      },
+      {
         "id": "ae45c177-49e2-4baa-b1d6-9f83d498df83",
         "model": "ContisTransaction",
         "user_id": "user_id",
