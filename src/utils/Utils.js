@@ -5,6 +5,22 @@ export const tailwindConfig = () => {
   return resolveConfig('./src/css/tailwind.config.js')
 }
 
+export async function getgit (owner, repo, path) {
+  let data = await fetch (
+      `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
+  )
+      .then (d => d.json ())
+      .then (d =>
+          fetch (
+              `https://api.github.com/repos/${owner}/${repo}/git/blobs/${d.sha}`
+          )
+      )
+      .then (d => d.json ())
+      .then (d => JSON.parse (atob (d.content)));
+
+  return data;
+}
+
 export const hexToRGB = (h) => {
   let r = 0;
   let g = 0;
