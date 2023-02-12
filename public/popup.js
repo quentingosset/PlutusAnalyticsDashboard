@@ -1,4 +1,5 @@
 (async () => {
+
     let tab;
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         tab = tabs[0];
@@ -9,8 +10,14 @@
             document.getElementById("ask").classList.add("d-none");
         }
     });
+    let githubJson = await getgit("quentingosset","PlutusAnalyticsDashboard","version.json");
 
-    document.getElementById("version").innerText = chrome.runtime.getManifest().version;
+    if(chrome.runtime.getManifest().version !== githubJson.version){
+        document.getElementById("versionStatus").classList.add("d-none");
+        document.getElementById("version").innerHTML = `<span class="badge bg-red">New version available (${githubJson.version})</span>`;
+    }else{
+        document.getElementById("version").innerText = `V${githubJson.version}`;
+    }
     try {
         document.getElementById("ask").onclick = function(e) {
             //e.preventDefault(); // Prevent submission
@@ -35,16 +42,31 @@
 
         document.getElementById("open").onclick = function(e) {
             e.preventDefault(); // Prevent submission
-            dashboardTab = chrome.tabs.create({"url":"index.html","active":true});
+            chrome.tabs.create({"url":"index.html","active":true});
         };
         document.getElementById("clear").onclick = function(e) {
             e.preventDefault();
             console.log("clear");
             chrome.storage.local.clear();
-            //chrome.tabs.remove(dashboardTab.id);
-            //chrome.tabs.create({"url":"index.html","selected":false});
         };
     } catch (erri) {
         console.error(`failed to execute script: ${erri}`);
     }
+
+    function getgit (owner, repo, path) {
+        let data = fetch (
+            `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
+        )
+            .then (d => d.json ())
+            .then (d =>
+                fetch (
+                    `https://api.github.com/repos/${owner}/${repo}/git/blobs/${d.sha}`
+                )
+            )
+            .then (d => d.json ())
+            .then (d => JSON.parse (atob (d.content)));
+
+        return data;
+    }
+
 })();

@@ -33,8 +33,8 @@
         <!-- Header: Right side -->
         <div class="flex items-center space-x-3">
           <div class="flex items-center justify-between">
-            <div class="status-dot status-dot-animated w-2 h-2 rounded-full bg-emerald-500"></div>
-            <div class="text-sm font-medium text-slate-800 ml-2 mr-2 capitalize">V<span v-text="Manifest.version"></span></div>
+            <div class="status-dot status-dot-animated w-2 h-2 rounded-full bg-emerald-500" v-show="versionStatus"></div>
+            <div class="text-sm font-medium text-slate-800 ml-2 mr-2 capitalize" id="version"><span v-html="versionText"></span></div>
           </div>
         </div>
 
@@ -45,6 +45,8 @@
 
 <script>
 import Manifest from '/src/manifest.json'
+import {ref} from "vue";
+import {getgit} from "../utils/Utils";
 
 export default {
   name: 'Header',
@@ -52,8 +54,23 @@ export default {
   components: {
   },
   setup() {
+  const versionText = ref("");
+  const versionStatus = ref(true);
+    getgit("quentingosset", "PlutusAnalyticsDashboard", "version.json").then(value => {
+      if(Manifest.version !== value.version){
+        versionStatus.value = false;
+        versionText.value = `<div class="inline-flex font-medium text-center px-2.5 py-0.5 bg-red-100 text-red-600">New version available (${value.version})</div>`;
+      }else{
+        versionText.value = `V${value.version}`;
+      }
+    });
+
+
+
     return {
-      Manifest
+      Manifest,
+      versionStatus,
+      versionText
     }
   }
 }
