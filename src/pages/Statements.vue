@@ -341,6 +341,7 @@ export default {
           && value.type !== "LOAD_PLUTUS_CARD_FROM_CJ_WALLET"
           && value.type !== "DEPOSIT_FUNDS_RECEIVED"
           && value.type !== "PLUTUS_WALLET_WITHDRAW_FEE"
+          && value.type !== "ORDER_FULFILLED"
       )});
       spendingMonthlyLimit.value = spendingMonthlyLimits.reduce((sum, transaction) => {
         return sum + (transaction.amount / 100);

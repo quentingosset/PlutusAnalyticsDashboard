@@ -199,6 +199,9 @@ export async function getStatementsAndRewards(){
         if(value.type === "PLUTUS_WALLET_WITHDRAW_FEE"){
             value.description = "Plutus - PLU Withdraw fee";
         }
+        if(value.type === "ORDER_FULFILLED"){
+            value.description = "Plutus - Dex buy";
+        }
         return value;
     });
     // BONUS = PLUTON TRANSACTION NOT A STATEMENT
