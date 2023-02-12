@@ -252,6 +252,7 @@ export default {name: 'StatementsTableItem', components: {
           return 'text-emerald-600'
         case 'LOAD_PLUTUS_CARD_FROM_CJ_WALLET':
         case 'PLUTUS_WALLET_WITHDRAW_FEE':
+        case 'ORDER_FULFILLED':
         case '0':
         case '5':
         case '31':
@@ -297,7 +298,9 @@ export default {name: 'StatementsTableItem', components: {
 
     const initStatus = () => {
       if(statement.value.type === 'LOAD_PLUTUS_CARD_FROM_CJ_WALLET'
-          || statement.value.type === 'DEPOSIT_FUNDS_RECEIVED' || statement.value.type === 'PLUTUS_WALLET_WITHDRAW_FEE') {
+          || statement.value.type === 'DEPOSIT_FUNDS_RECEIVED'
+          || statement.value.type === 'PLUTUS_WALLET_WITHDRAW_FEE'
+          || statement.value.type === 'ORDER_FULFILLED') {
         statement.value.status.value = 'no_reward';
         statement.value.status.text = 'No Reward';
         statement.value.status.style = 'bg-slate-100 text-slate-600';
@@ -407,6 +410,7 @@ export default {name: 'StatementsTableItem', components: {
         case "REBATE_BONUS":
           return ImageGift
         case "PLUTUS_WALLET_WITHDRAW_FEE":
+        case "ORDER_FULFILLED":
           return ImageWithdrawFee
       }
     }
