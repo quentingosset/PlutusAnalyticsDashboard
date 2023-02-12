@@ -4,6 +4,7 @@ dist_test
 dist-ssr
 *.local
 dist
+package-lock.json
 /.idea/.gitignore
 /.idea/modules.xml
 /.idea/PlutusAnalyticsDashboard.iml

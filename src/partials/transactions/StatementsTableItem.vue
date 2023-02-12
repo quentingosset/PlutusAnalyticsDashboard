@@ -1,7 +1,7 @@
 <template>
   <!-- Row -->
   <!--<tr v-show="filter !== 'completed'" :class="{ viewportPendulum: filter === 'completed' }" class="tx" :id="`${order.id}`">-->
-  <tr v-show="!hidden" :class="{ fadeOut: showFadeOutClass, fadeIn: showFadeInClass }" class="tx" :id="`${transaction.id}`">
+  <tr v-show="!hidden" :class="{ fadeOut: showFadeOutClass, fadeIn: showFadeInClass }" class="tx" :id="`${transaction.id}`" :data-debug="`${JSON.stringify(transaction)}`">
     <!--<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
       <div class="flex items-center">
         <label class="inline-flex">

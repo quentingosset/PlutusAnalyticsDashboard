@@ -40,9 +40,10 @@
   <div class="bg-white shadow-lg rounded-sm border border-slate-200 relative">
     <header class="px-5 py-4">
       <div class="flex items-center justify-between">
-        <h2 class="font-semibold text-slate-600">All Transactions: <span class="text-slate-800 font-bold">{{ statements.length }}</span></h2>
+        <h2 class="font-semibold text-slate-600">All Transactions: <span class="text-slate-800 font-bold">{{ statementsSorted.length }}</span></h2>
         <div class="flex items-center justify-between">
           <h2 class="font-medium text-slate-600 mr-2">Total rewards: <span class="text-slate-800 font-bold">{{ totalReward }} PLU</span></h2>
+          <h2 class="font-medium text-slate-600 mr-2">- Pending rewards: <span class="text-slate-800 font-bold">{{ pendingReward }} PLU</span></h2>
           <h2 class="font-medium text-slate-600 mr-2">- Total cashback: <span class="text-slate-800 font-bold">{{ formatCurrency(totalCashback) }}</span></h2>
           <h2 class="font-medium text-slate-600 mr-2">- PLU average: <span class="text-slate-800 font-bold">{{ formatCurrency(cashbackAverage) }}</span></h2>
 
@@ -129,15 +130,17 @@ export default {
     const isLoading = ref(true);
     const selectAll = ref(false);
     const selected = ref([]);
-    const totalReward = ref(0);
-    const totalCashback = ref(0);
-    const cashbackAverage = ref(0);
     const sortedItems = ref(new Map());
     const defaultSortedItem = ref(null);
     const dateStart = ref(dayjs().subtract(1, 'month'))
     const dateEnd = ref(dayjs())
+    const pendingReward = ref(0);
+    const totalReward = ref(0);
+    const totalCashback = ref(0);
+    const cashbackAverage = ref(0);
+    const statements = computed(() => props.statements);
     const statementsSorted = ref([]);
-    const statements = computed(() => props.statements)
+    statementsSorted.value = statements.value.filter((value) => dayjs(value.date).isBetween(dateStart.value,dateEnd.value,null, '[]'));
     const checkAll = () => {
       selected.value = []
       if (!selectAll.value) {
@@ -151,15 +154,15 @@ export default {
       emit('change-selection', selected.value)
     });
 
-    totalReward.value = statements.value.map(cashback => cashback.cashback)
-        .reduce((sum, cashback) => sum + cashback.reduce((previousSum, cashback) => previousSum + parseFloat(cashback.amount),0),0).toFixed(2);
+    watch(statementsSorted, (value, oldValue, onCleanup) => {
+      console.log("update");
+      let tmp = statementsSorted.value;
+      totalReward.value = tmp.map(cashback => cashback.cashback).reduce((sum, cashback) => sum + cashback.reduce((previousSum, cashback) => previousSum + parseFloat(cashback.amount),0),0).toFixed(2);
+      totalCashback.value = tmp.map(cashback => cashback.cashback).reduce((sum, cashback) => sum + cashback.reduce((previousSum, cashback) => previousSum + ((((parseFloat(cashback.fiat_amount_rewarded??0) / 100) * (parseFloat(cashback.rebate_rate)/100))/parseFloat(cashback.amount)) * parseFloat(cashback.amount)),0),0).toFixed(2);
+      cashbackAverage.value = totalCashback.value/totalReward.value;
+      pendingReward.value = tmp.filter(statement => statement.status !== undefined && statement.status.value === 'pending').reduce((sum, statement) => sum +  parseFloat(statement.reward.value),0).toFixed(2);
+    }, {immediate: true})
 
-    totalCashback.value = statements.value.map(cashback => cashback.cashback)
-        .reduce((sum, cashback) => sum + cashback.reduce((previousSum, cashback) => previousSum + ((((parseFloat(cashback.fiat_amount_rewarded??0) / 100) * (parseFloat(cashback.rebate_rate)/100))/parseFloat(cashback.amount)) * parseFloat(cashback.amount)),0),0).toFixed(2);
-
-    cashbackAverage.value = totalCashback.value/totalReward.value;
-
-    statementsSorted.value = statements.value.filter((value) => dayjs(value.date).isBetween(dateStart.value,dateEnd.value,null, '[]'));
 
     isLoading.value = false;
     return {
@@ -169,6 +172,7 @@ export default {
       isLoading,
       totalReward,
       totalCashback,
+      pendingReward,
       cashbackAverage,
       sortedItems,
       dateStart,
