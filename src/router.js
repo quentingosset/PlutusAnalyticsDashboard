@@ -1,9 +1,8 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import Changelog from "./pages/Changelog.vue";
-import Statements from "./pages/Statements.vue";
 
 const routerHistory = createWebHashHistory()
-
+const Changelog = () => import('./pages/Changelog.vue')
+const Statements = () => import('./pages/Statements.vue')
 export const router = createRouter({
   history: routerHistory,
   routes: [

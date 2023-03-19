@@ -215,7 +215,7 @@ export default {name: 'StatementsTableItem', components: {
     const hidden = ref(false);
     const showFadeOutClass = ref(false);
     const showFadeInClass = ref(true);
-    const sortedKeyword = ref(new Map());
+    const sortedKeyword = ref(new Set());
 
     function check() {
       let updatedSelected = [...props.selected]
@@ -304,9 +304,9 @@ export default {name: 'StatementsTableItem', components: {
         statement.value.status.value = 'no_reward';
         statement.value.status.text = 'No Reward';
         statement.value.status.style = 'bg-slate-100 text-slate-600';
-        sortedKeyword.value.set('no_reward');
+        sortedKeyword.value.add('no_reward');
       } else if (statement.value.type === 'REBATE_BONUS') {
-        sortedKeyword.value.set('bonus');
+        sortedKeyword.value.add('bonus');
         statement.value.status.value = 'bonus';
         statement.value.status.text = 'Bonus';
         statement.value.status.style = 'bg-blue-100 text-blue-600';
@@ -314,24 +314,24 @@ export default {name: 'StatementsTableItem', components: {
         statement.value.reason.value = find? find.reason : "-" ;
         statement.value.status.tooltip.text = `Reason : ${statement.value.reason.value}`;
       } else if (statement.value.type === '5') {
-        sortedKeyword.value.set('declined');
+        sortedKeyword.value.add('declined');
         statement.value.status.value = 'declined';
         statement.value.status.text = 'Declined';
         statement.value.status.style = 'bg-rose-100 text-rose-600';
       } else if (statement.value.type === '0' && statement.value.cashback.length === 0) {
-        sortedKeyword.value.set('validation');
+        sortedKeyword.value.add('validation');
         statement.value.status.value = 'validation';
         statement.value.status.text = 'In Validation';
         statement.value.status.style = 'bg-amber-100 text-amber-600';
       } else if (statement.value.cashback.length > 0 && statement.value.cashback.find((cashback) => {return cashback.available === false && cashback.reason !== null})) {
-        sortedKeyword.value.set('rejected');
+        sortedKeyword.value.add('rejected');
         statement.value.status.value = 'rejected';
         statement.value.status.text = 'Rejected';
         statement.value.status.style = 'bg-rose-100 text-rose-600';
         statement.value.reason.value = statement.value.cashback.find((cashback) => {return cashback.available === false && cashback.reason !== null}).reason;
         statement.value.status.tooltip.text = `Reason : ${statement.value.reason.value}`;
       } else if (statement.value.cashback.length > 0 && statement.value.cashback.find((cashback) => {return cashback.available === false})) {
-        sortedKeyword.value.set('pending');
+        sortedKeyword.value.add('pending');
         let releaseDate = dayjs(statement.value.cashback.find((cashback) => {return cashback.available === false}).createdAt).add(45, 'day').format('DD MMMM YYYY, HH:mm');
         statement.value.status.value = 'pending';
         statement.value.status.text = 'Pending';
@@ -342,18 +342,18 @@ export default {name: 'StatementsTableItem', components: {
         statement.value.status.value = 'rewarded';
         statement.value.status.text = 'Rewarded';
         statement.value.status.style = 'bg-emerald-100 text-emerald-600';
-        sortedKeyword.value.set('rewarded');
-        sortedKeyword.value.set('completed');
+        sortedKeyword.value.add('rewarded');
+        sortedKeyword.value.add('completed');
       } else if (statement.value.type === '45' || statement.value.type === '35') {
         statement.value.status.value = 'refunded';
         statement.value.status.text = 'Refunded';
         statement.value.status.style = 'bg-slate-100 text-slate-600';
-        sortedKeyword.value.set('refunded');
+        sortedKeyword.value.add('refunded');
       } else {
         statement.value.status.value = 'no_reward';
         statement.value.status.text = 'No Reward';
         statement.value.status.style = 'bg-slate-100 text-slate-600';
-        sortedKeyword.value.set('no_reward');
+        sortedKeyword.value.add('no_reward');
       }
     }
     const initReward = () => {
@@ -428,7 +428,7 @@ export default {name: 'StatementsTableItem', components: {
         minimumFractionDigits: 2
       });
       return formatter.format(value);
-    };
+    }
 
     return {
       check,
@@ -475,11 +475,7 @@ export default {name: 'StatementsTableItem', components: {
     }
   }, watch: {
     sortedItems() {
-      if (this.sortedItems.has("all")) {
-        this.showFadeOutClass = false;
-        this.showFadeInClass = true;
-        this.hidden = false;
-      } else if ([...this.sortedItems].filter(([k, v]) => this.sortedKeyword.has(k)).length === 0) {
+      if (!this.sortedItems.has(...this.sortedKeyword)) {
         this.showFadeInClass = false;
         this.showFadeOutClass = true;
         setTimeout(() => this.hidden = true, 1000);
