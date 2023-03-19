@@ -3,7 +3,7 @@
     {
       "id": "id",
       "user_id": "user_id",
-      "card_number": "****-****-****-****",
+      "card_number": "1234-5678-9123-4567",
       "contis_consumer": {
         "id": "id",
         "currency": "EUR",
@@ -16,7 +16,7 @@
       "updated_at": "2022-05-13T14:01:08.284+00:00",
       "issued": true,
       "status": 1,
-      "expiry_date": "",
+      "expiry_date": "1234",
       "__typename": "plutus_cards"
     }
   ]

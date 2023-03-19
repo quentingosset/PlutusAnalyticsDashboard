@@ -23,8 +23,9 @@
     "@vue/compiler-sfc": "^3.2.20",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
+    "rollup-plugin-copy": "^3.4.0",
     "tailwindcss": "^3.1.6",
     "vite": "^4.0.4",
-    "rollup-plugin-copy": "^3.4.0"
+    "vite-plugin-zip-pack": "^1.0.5"
   }
 }

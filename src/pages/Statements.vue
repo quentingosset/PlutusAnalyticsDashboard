@@ -279,6 +279,7 @@ import Tooltip from "../components/Tooltip.vue";
 import logoCard from '../images/logo_card.png'
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 
 export default {
   name: 'Transactions',
@@ -296,12 +297,12 @@ export default {
     const cardExpiration = ref(null);
     const subscriptionPlan = ref(null);
     const subscriptionEnd = ref(null);
-    const stakingLevel = ref(null);
-    const perks = ref(null);
-    const percent = ref(null);
-    const cashbackUpTo = ref(null);
-    const cashbackLimit = ref(null);
-    const monthlyReward = ref(null);
+    const stakingLevel = ref(0);
+    const perks = ref(0);
+    const percent = ref(0);
+    const cashbackUpTo = ref(0);
+    const cashbackLimit = ref(0);
+    const monthlyReward = ref(0);
     const perksHistory = ref([]);
     const perksUsed = ref([]);
     const availableBalance = ref(0);
@@ -318,18 +319,11 @@ export default {
       localStorage.setItem('last_name',value?.personal_details.last_name??"LAST_NAME");
     });
 
-    getPlutusCard().then(value => {
-      cardStatus.value = value.status
-      cardNumber.value = value.card_number;
-      cardExpiration.value = value.expiry_date.substring(0, value.expiry_date.length - 2) + "/" + value.expiry_date.substring(value.expiry_date.length - 2);
-    });
-
-
-    getSubscription().then(value => {
-      subscriptionPlan.value = value.plan;
-      subscriptionEnd.value = value.ends_on;
-      setSubscriptionInformations();
-    });
+    checkSubscriptionInformations();
+    checkPerks();
+    checkTransactions();
+    checkBalance();
+    checkCard();
 
     getStatementsAndRewards().then(value => {
       dayjs.extend(isBetween);
@@ -348,68 +342,66 @@ export default {
       },0);
     });
 
+    isLoading.value = false;
 
-    getUserPerks().then(value => {
-      stakingLevel.value = value.staking_level;
+    async function checkCard() {
+      const [userCardStatus, userCardNumber, userCardExpiration] = await getPlutusCard().then(userCard => [userCard.status, userCard.card_number, userCard.expiry_date.substring(0, userCard.expiry_date.length - 2) + "/" + userCard.expiry_date.substring(userCard.expiry_date.length - 2)]);
+      cardStatus.value = userCardStatus;
+      cardNumber.value = userCardNumber;
+      cardExpiration.value = userCardExpiration;
+    }
+
+    /* Logic from https://github.com/styfic/plutus-perk-checker/blob/main/perk-checker.js */
+    async function checkPerks() {
+      dayjs.extend(isSameOrAfter);
+      const isPerkTransaction = transaction => dayjs(transaction.createdAt).isSameOrAfter(dayjs().startOf('month'),'month') && transaction.reference_type.indexOf('perk') >= 0;
+      const perkTransactionsOfCurrentMonth = await getRewards().then(result => result.filter(isPerkTransaction));
+      const [userPerks, perksGranted, userStakingLevel, perksNextMonth] = await getUserPerks().then(userPerks => [userPerks.perks, userPerks.total_perks_granted, userPerks.staking_level, userPerks.next_month_perks]);
+      const isUsedPerk = (transaction, perk) => transaction.reference_type === `perk_${perk.id}_reward`;
+      const usedPerks = userPerks.filter(perk => perkTransactionsOfCurrentMonth.some(transaction => isUsedPerk(transaction, perk)));
+      const unusedPerks = userPerks.filter(perk => perkTransactionsOfCurrentMonth.every(transaction => !isUsedPerk(transaction, perk)));
+
+      perksUsed.value = usedPerks.length;
+      perks.value = perksGranted;
+      stakingLevel.value = userStakingLevel;
+
       setStakingInformations();
-    });
+    }
+    async function checkTransactions() {
+      dayjs.extend(isSameOrAfter);
+      const rewardTransactions = await getRewards().then(result => result);
+      const isCurrentMonthTransaction = transaction => dayjs(transaction.createdAt).isSameOrAfter(dayjs(),'month');
+      const rewardTransactionsOfCurrentMonth = rewardTransactions.filter(isCurrentMonthTransaction);
 
-    getRewards().then(value => {
-      let currentMonthReward = value.filter(value => {return dayjs().isSame(value.createdAt, 'month')});
-      monthlyReward.value = currentMonthReward.reduce((sum, cashback) => {
+      monthlyReward.value = rewardTransactionsOfCurrentMonth.reduce((sum, cashback) => {
         return sum + ((cashback.fiat_amount_rewarded / 100) * (cashback.rebate_rate / 100));
       },0);
+    }
+    async function checkSubscriptionInformations() {
+      const [userSubscriptionPlan, userSubscriptionDesired, userSubscriptionEnd] = await getSubscription().then(userSubscription => [userSubscription.plan, userSubscription.desired_plan ,userSubscription.ends_on]);
 
-      perksHistory.value = value.filter(cashback => {
-        let perkFind = cashback.reference_type.match(/(?<=perk_).*(?=_reward)/);
-        if(perkFind !== null){
-          cashback.perks_id = perkFind[0];
-          return true;
-        }
-        return false;
-      });
+      subscriptionPlan.value = userSubscriptionPlan;
+      subscriptionEnd.value = userSubscriptionEnd;
 
-      perksUsed.value = [...perksHistory.value].filter(value => {return dayjs().isSame(value.createdAt, 'month')});
-    });
-
-    /* From https://github.com/styfic/plutus-perk-checker/blob/main/perk-checker.js
-
-    Needs adaption for getRewards() and possibly getUserPerks to return the expected result
-
-    */
-
-    async function checkPerks() {
-
-    const isPerkTransaction = transaction => new Date(transaction.createdAt) >= getFirstDayCurrentMonth() && transaction.reference_type.indexOf('perk') >= 0;
-    const perkTransactionsOfCurrentMonth = await getRewards().then(result => result.filter(isPerkTransaction));
-    const [userPerks, perksGranted] = await getUserPerks().then(userPerks => [userPerks.perks, userPerks.total_perks_granted]);
-    const isUsedPerk = (transaction, perk) => transaction.reference_type === `perk_${perk.id}_reward`;
-    const usedPerks = userPerks.filter(perk => perkTransactionsOfCurrentMonth.some(transaction => isUsedPerk(transaction, perk)));
-    const unusedPerks = userPerks.filter(perk => perkTransactionsOfCurrentMonth.every(transaction => !isUsedPerk(transaction, perk)));
-
-    perksUsed.value = usedPerks.length
-    } 
-
-    getBalance().then(value => {
-      availableBalance.value = value.AvailableBalance;
-    });
-
+      setSubscriptionInformations();
+    }
+    async function checkBalance(){
+      const [userAccountBalance, userAvailableBalance, userCreditHoldBalance, userDebitHoldBalance] = await getBalance().then(userBalance => [userBalance.AccountBalance, userBalance.AvailableBalance , userBalance.CreditHoldBalance, userBalance.DebitHoldBalance]);
+      availableBalance.value = userAvailableBalance;
+    }
     function setSubscriptionInformations(){
       if(subscriptionPlan.value === "starter"){
         percent.value = 3;
-        perks.value = 1;
         cashbackUpTo.value = 250;
         monthlySpendLimit.value = 5000;
         cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
       } else if(subscriptionPlan.value === "everyday"){
         percent.value = 3;
-        perks.value = 2;
         cashbackUpTo.value = 2000;
         monthlySpendLimit.value = 15500;
         cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
       } else if(subscriptionPlan.value === "premium"){
         percent.value = 3;
-        perks.value = 3;
         cashbackUpTo.value = 22500;
         monthlySpendLimit.value = 22500;
         cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
@@ -418,27 +410,21 @@ export default {
     function setStakingInformations(){
       if(stakingLevel.value === 1){
         percent.value = 4;
-        perks.value = 4;
         cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
       } else if(stakingLevel.value === 2){
         percent.value = 5;
-        perks.value = 5;
         cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
       } else if(stakingLevel.value === 3){
         percent.value = 6;
-        perks.value = 6;
         cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
       } else if(stakingLevel.value === 4){
         percent.value = 8;
-        perks.value = 8;
         cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
       }
     }
-
     const cashbackMonthlyLimitPercent = () => {
       return `width:${((monthlyReward.value / cashbackLimit.value) * 100)}%;`;
     }
-
     const spendingMonthlyLimitPercent = () => {
       return `width:${((spendingMonthlyLimit.value / monthlySpendLimit.value) * 100)}%;`;
     }
@@ -504,7 +490,7 @@ export default {
       return `${this.percent}% (${this.formatStakingLevel()}) + ${this.perks} Perks`;
     },
     formatUsedPerk(){
-      return `${this.perksUsed.length} / ${this.perks} Used Perks`;
+      return `${this.perksUsed} / ${this.perks}`;
     },
     formatCurrency(value) {
       if (isNaN(value)) {
