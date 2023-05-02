@@ -297,6 +297,12 @@ export default {name: 'StatementsTableItem', components: {
     }
 
     const initStatus = () => {
+      if (statement.value.type === '29'
+          || statement.value.type === 'LOAD_PLUTUS_CARD_FROM_CJ_WALLET'
+          || statement.value.type === 'LOAD_PLUTUS_CARD_FROM_WALLET'
+          || statement.value.type === 'DEPOSIT_FUNDS_RECEIVED') {
+        sortedKeyword.value.add('load');
+      }
       if(statement.value.type === 'LOAD_PLUTUS_CARD_FROM_CJ_WALLET'
           || statement.value.type === 'DEPOSIT_FUNDS_RECEIVED'
           || statement.value.type === 'PLUTUS_WALLET_WITHDRAW_FEE'
