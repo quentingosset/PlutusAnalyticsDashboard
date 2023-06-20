@@ -22,7 +22,7 @@
 
               <!-- Left: Title -->
               <div class="mb-4 sm:mb-0">
-                <h1 class="text-2xl md:text-3xl text-slate-800 font-bold">Statements</h1>
+                <h1 class="text-2xl md:text-3xl text-slate-800 font-bold">Transactions</h1>
               </div>
 
               <!-- Add card button -->
@@ -140,16 +140,17 @@
                       <img :src="logoCard" style="width: 48px;">
                       <!-- Card number -->
                       <div class="flex justify-between text-lg font-bold text-slate-200 tracking-widest drop-shadow-sm">
-                        <span v-if="isLoading">****-****-****-****</span>
+                        <span v-if="isLoading" class="animate-pulse h-4 w-60 bg-slate-200 rounded">****-****-****-****</span>
                         <span v-else>{{cardNumber}}</span>
                       </div>
                       <!-- Card footer -->
                       <div class="relative flex justify-between items-center z-10 mb-0.5">
                         <!-- Card expiration -->
                         <div class="text-sm font-bold text-slate-200 tracking-widest drop-shadow-sm space-x-3">
-                          <span v-if="isLoading">EXP **/**</span>
+                          <span v-if="isLoading" class="animate-pulse h-3 w-24 bg-slate-200 rounded">EXP **/**</span>
                           <span v-else>EXP {{cardExpiration}}</span>
-                          <span>CVC ***</span>
+                          <span v-if="isLoading" class="animate-pulse h-3 w-24 bg-slate-200 rounded">EXP **/**</span>
+                          <span v-else>CVC ***</span>
                         </div>
                       </div>
                       <!-- Mastercard logo -->
@@ -166,36 +167,26 @@
                     <ul>
                       <li class="flex items-center justify-between py-3 border-b border-slate-200">
                         <div class="text-sm">Card Balance</div>
-                        <div class="text-sm font-medium text-slate-800 ml-2">{{ formatCurrency(availableBalance / 100) }}</div>
+                          <div v-show="isLoading" class="animate-pulse h-3 w-14 bg-slate-200 rounded"></div>
+                          <div v-show="!isLoading" class="text-sm font-medium text-slate-800 ml-2">{{ formatCurrency(availableBalance / 100) }}</div>
                       </li>
                       <li class="flex items-center justify-between py-3 border-b border-slate-200">
                         <div class="text-sm">Subscription</div>
-                        <div class="flex items-center justify-between">
-                          <div v-html=expirationSubscription()></div>
-                          <div class="text-sm font-medium text-slate-800 ml-2 mr-2 capitalize">{{ subscriptionPlan }}</div>
-                          <div class="flex items-center space-x-2">
-                            <!-- Start -->
-                            <Tooltip class="" size="sm" position="left">
-                              <template v-slot:content>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 16 16">
-                                  <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 12c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm1-3H7V4h2v5z" />
-                                </svg>
-                              </template>
-                              <template  v-slot:tooltip>
-                                <p class="text-xs whitespace-nowrap text-left">Expiry date : {{ formatDate(subscriptionEnd) }}</p>
-                              </template >
-                            </Tooltip>
-                            <!-- End -->
-                          </div>
+                        <div v-show="isLoading" class="animate-pulse h-3 w-24 bg-slate-200 rounded"></div>
+                        <div v-show="!isLoading" class="flex items-center justify-between">
+                          <div class="cursor-pointer" v-html="expirationSubscription()" @click.stop="infoModalSubscriptionOpen = true"></div>
+                          <div class="cursor-pointer text-sm font-medium text-slate-800 ml-2 mr-2 capitalize" @click.stop="infoModalSubscriptionOpen = true">{{ subscriptionPlan }}</div>
                         </div>
                       </li>
                       <li class="flex items-center justify-between py-3 border-b border-slate-200">
                         <div class="text-sm">Status</div>
-                        <div class="text-sm font-medium text-slate-800 ml-2">{{ formatStatus() }}</div>
+                        <div v-show="isLoading" class="animate-pulse h-3 w-24 bg-slate-200 rounded"></div>
+                        <div v-show="!isLoading" class="text-sm font-medium text-slate-800 ml-2">{{`${this.stakingLevel._percent}% (${this.stakingLevel._name}) + ${this.perks} Perks`}}</div>
                       </li>
                       <li class="flex items-center justify-between py-3 border-b border-slate-200">
                         <div class="text-sm">Perks used</div>
-                        <div class="text-sm font-medium text-slate-800 ml-2" v-html="formatUsedPerk()"></div>
+                        <div v-show="isLoading" class="animate-pulse h-3 w-14 bg-slate-200 rounded"></div>
+                        <div v-show="!isLoading" class="text-sm font-medium text-slate-800 ml-2">{{`${this.perksUsed} / ${this.perks}`}}</div>
                       </li>
                     </ul>
                   </div>
@@ -206,11 +197,13 @@
                     <div class="pb-4 border-b border-slate-200">
                       <div class="flex justify-between text-sm mb-2">
                         <div>Cashback This Month</div>
-                        <div class="italic"> {{ formatCurrency(monthlyReward) }} <span class="text-slate-400">/</span> {{ formatCurrency(cashbackLimit) }}</div>
+                        <div v-show="isLoading" class="animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
+                        <div v-show="!isLoading" class="italic"> {{ formatCurrency(monthlyReward) }} <span class="text-slate-400">/</span> {{ formatCurrency(cashbackLimit) }}</div>
                       </div>
-                      <div class="relative w-full h-2 bg-slate-300">
-                        <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="cashbackMonthlyLimitPercent()"></div>
-                      </div>
+                        <div v-show="isLoading" class="relative w-full h-2 animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
+                        <div v-show="!isLoading" class="relative w-full h-2 bg-slate-300">
+                          <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="cashbackMonthlyLimitPercent()"></div>
+                        </div>
                     </div>
                   </div>
                   <!-- Payment Limits -->
@@ -219,11 +212,13 @@
                     <div class="pb-4 border-b border-slate-200">
                       <div class="flex justify-between text-sm mb-2">
                         <div>Monthly spent</div>
-                        <div class="italic"> {{ formatCurrency(spendingMonthlyLimit) }} <span class="text-slate-400">/</span> {{ formatCurrency(monthlySpendLimit) }}</div>
+                          <div v-show="isLoading" class="animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
+                          <div v-show="!isLoading" class="italic"> {{ formatCurrency(spendingMonthlyLimit) }} <span class="text-slate-400">/</span> {{ formatCurrency(monthlySpendLimit) }}</div>
                       </div>
-                      <div class="relative w-full h-2 bg-slate-300">
-                        <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="spendingMonthlyLimitPercent()"></div>
-                      </div>
+                        <div v-show="isLoading" class="relative w-full h-2 animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
+                        <div v-show="!isLoading" class="relative w-full h-2 bg-slate-300">
+                          <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="spendingMonthlyLimitPercent()"></div>
+                        </div>
                     </div>
                   </div>
 
@@ -256,6 +251,43 @@
 
       </main>
 
+      <ModalBasic id="feedback-modal" :modalOpen="infoModalSubscriptionOpen" @close-modal="infoModalSubscriptionOpen = false" title="Subscription Informations">
+            <!-- Modal content -->
+
+            <div class="px-5 pt-4 pb-1">
+                <div class="text-sm">
+                    <div class="mb-4">Informations about your subscription:</div>
+                    <!-- Options -->
+                    <ul class="space-y-2 mb-4">
+                        <li v-for="subscription in SubscriptionType">
+                            <button class="w-full h-full text-left py-3 px-4 rounded bg-white shadow-sm duration-150 ease-in-out" :class="(subscription.name === subscriptionPlan)?'border-2 border-indigo-400' : 'border border-slate-200 hover:border-slate-300' ">
+                                <div class="flex items-center">
+                                    <div class="grow">
+                                        <div class="flex flex-wrap items-center justify-between mb-0.5">
+                                            <span class="font-medium text-slate-800 first-letter:uppercase">{{subscription.name}}
+                                                <span v-if="(subscription.name === subscriptionPlan)" class="text-xs italic text-slate-500 align-top text-xs italic text-indigo-500 align-top">Current Subscription</span>
+                                                <span v-if="(subscription.name === subscriptionPlanDesired)" class="text-xs italic text-indigo-500 align-top">Apply next renew</span>
+                                            </span>
+                                            <span><span class="font-medium text-emerald-600">{{formatCurrency(subscription.amount)}}</span>/mo</span>
+                                        </div>
+                                        <div class="text-sm">{{subscription.percent}} on {{formatCurrency(subscription.maxExpense)}} · {{subscription.perk}} Perk · {{subscription.dexPercent}}% fee on DEX</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="text-xs text-slate-500">Your {{subscriptionPlan}} subscription will renew on : <b>{{ formatDate(subscriptionEnd) }}</b>.</div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="px-5 py-4">
+                <div class="flex flex-wrap justify-end space-x-2">
+                    <button class="btn-sm bg-indigo-500 hover:bg-indigo-600 text-white">Change Subscription on Plutus</button>
+                </div>
+            </div>
+        </ModalBasic>
+
+
     </div>
 
   </div>
@@ -266,28 +298,38 @@ import {ref} from 'vue'
 import Sidebar from '../partials/Sidebar.vue'
 import Header from '../partials/Header.vue'
 import {
+  getAllStatements,
   getBalance,
   getPlutusCard,
   getRewards,
-  getStatementsAndRewards,
   getSubscription,
   getUserPerks,
   getUserProfile
 } from "../utils/PlutusCall";
 import TransactionsTable from "../partials/transactions/StatementsTable.vue";
 import Tooltip from "../components/Tooltip.vue";
+import ModalBasic from "../components/ModalBasic.vue";
 import logoCard from '../images/logo_card.png'
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import {StatementsType} from "../utils/StatementsType";
+import {SubscriptionType} from "../utils/SubscriptionType";
+import {StakingTier} from "../utils/StakingTier";
 
 export default {
   name: 'Transactions',
+    computed: {
+        SubscriptionType() {
+            return Object.values(SubscriptionType)
+        }
+    },
   components: {
     Sidebar,
     Header,
     TransactionsTable,
-    Tooltip
+    Tooltip,
+      ModalBasic
   },
   setup() {
     const isLoading = ref(true);
@@ -296,6 +338,7 @@ export default {
     const cardStatus = ref(false);
     const cardExpiration = ref(null);
     const subscriptionPlan = ref(null);
+    const subscriptionPlanDesired = ref(null);
     const subscriptionEnd = ref(null);
     const stakingLevel = ref(0);
     const perks = ref(0);
@@ -309,6 +352,7 @@ export default {
     const spendingMonthlyLimit = ref(0);
     const monthlySpendLimit = ref(0);
     const statements = ref([]);
+    const infoModalSubscriptionOpen = ref(false)
     const updateSelectedItems = (selected) => {
       selectedItems.value = selected
     };
@@ -319,30 +363,30 @@ export default {
       localStorage.setItem('last_name',value?.personal_details.last_name??"LAST_NAME");
     });
 
+    // TODO SIMPLIFIER ICI
     checkSubscriptionInformations();
     checkPerks();
     checkTransactions();
     checkBalance();
     checkCard();
 
-    getStatementsAndRewards().then(value => {
+      getAllStatements().then(value => {
       dayjs.extend(isBetween);
 
       statements.value = value;
 
       let spendingMonthlyLimits = value.filter((value) => {return (dayjs(value.date).isBetween(dayjs().subtract(1, 'month'),dayjs(),null, '[]')
-          && value.type !== "29"
-          && value.type !== "LOAD_PLUTUS_CARD_FROM_CJ_WALLET"
-          && value.type !== "DEPOSIT_FUNDS_RECEIVED"
-          && value.type !== "PLUTUS_WALLET_WITHDRAW_FEE"
-          && value.type !== "ORDER_FULFILLED"
+          && !StatementsType.TOP_UP_CARD.is(value.type)
+          && !StatementsType.WITHDRAW_ACCOUNT_TO_CARD.is(value.type)
+          && !StatementsType.TOP_UP_ACCOUNT.is(value.type)
+          && !StatementsType.WITHDRAW_FEE.is(value.type)
+          && !StatementsType.DEX_BUY.is(value.type)
       )});
       spendingMonthlyLimit.value = spendingMonthlyLimits.reduce((sum, transaction) => {
         return sum + (transaction.amount / 100);
       },0);
+        isLoading.value = false;
     });
-
-    isLoading.value = false;
 
     async function checkCard() {
       const [userCardStatus, userCardNumber, userCardExpiration] = await getPlutusCard().then(userCard => [userCard.status, userCard.card_number, userCard.expiry_date.substring(0, userCard.expiry_date.length - 2) + "/" + userCard.expiry_date.substring(userCard.expiry_date.length - 2)]);
@@ -356,11 +400,12 @@ export default {
       dayjs.extend(isSameOrAfter);
       const isPerkTransaction = transaction => dayjs(transaction.createdAt).isSameOrAfter(dayjs().startOf('month'),'month') && transaction.reference_type.indexOf('perk') >= 0;
       const perkTransactionsOfCurrentMonth = await getRewards().then(result => result.filter(isPerkTransaction));
-      const [userPerks, perksGranted, userStakingLevel, perksNextMonth] = await getUserPerks().then(userPerks => [userPerks.perks, userPerks.total_perks_granted, userPerks.staking_level, userPerks.next_month_perks]);
+      const [userPerks, perksGranted, userStakingLevel, perksNextMonth] = await getUserPerks().then(userPerks => [userPerks.perks, userPerks.total_perks_granted, StakingTier.init(userPerks.staking_level), userPerks.next_month_perks]);
       const isUsedPerk = (transaction, perk) => transaction.reference_type === `perk_${perk.id}_reward`;
       const usedPerks = userPerks.filter(perk => perkTransactionsOfCurrentMonth.some(transaction => isUsedPerk(transaction, perk)));
       const unusedPerks = userPerks.filter(perk => perkTransactionsOfCurrentMonth.every(transaction => !isUsedPerk(transaction, perk)));
 
+      //console.log(unusedPerks);
       perksUsed.value = usedPerks.length;
       perks.value = perksGranted;
       stakingLevel.value = userStakingLevel;
@@ -381,6 +426,7 @@ export default {
       const [userSubscriptionPlan, userSubscriptionDesired, userSubscriptionEnd] = await getSubscription().then(userSubscription => [userSubscription.plan, userSubscription.desired_plan ,userSubscription.ends_on]);
 
       subscriptionPlan.value = userSubscriptionPlan;
+      subscriptionPlanDesired.value = userSubscriptionDesired;
       subscriptionEnd.value = userSubscriptionEnd;
 
       setSubscriptionInformations();
@@ -407,20 +453,9 @@ export default {
         cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
       }
     }
+    // todo simplifier ici
     function setStakingInformations(){
-      if(stakingLevel.value === 1){
-        percent.value = 4;
-        cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
-      } else if(stakingLevel.value === 2){
-        percent.value = 5;
-        cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
-      } else if(stakingLevel.value === 3){
-        percent.value = 6;
-        cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
-      } else if(stakingLevel.value === 4){
-        percent.value = 8;
-        cashbackLimit.value = cashbackUpTo.value*(percent.value/100);
-      }
+        cashbackLimit.value = cashbackUpTo.value*(stakingLevel.value._percent/100)
     }
     const cashbackMonthlyLimitPercent = () => {
       return `width:${((monthlyReward.value / cashbackLimit.value) * 100)}%;`;
@@ -437,6 +472,7 @@ export default {
       updateSelectedItems,
       logoCard,
       subscriptionPlan,
+      subscriptionPlanDesired,
       subscriptionEnd,
       cardStatus,
       stakingLevel,
@@ -451,7 +487,8 @@ export default {
       availableBalance,
       spendingMonthlyLimit,
       spendingMonthlyLimitPercent,
-      statements
+      statements,
+      infoModalSubscriptionOpen
     }
   },
   methods: {
@@ -471,26 +508,6 @@ export default {
       }else{
         return '<div class="w-2 h-2 rounded-full bg-rose-500"></div>';
       }
-    },
-    formatStakingLevel(){
-      switch (this.stakingLevel){
-        case 1:
-          return "Hero";
-        case 2:
-          return "Veteran";
-        case 3:
-          return "Legend";
-        case 4:
-          return "G.O.A.T";
-        default:
-          return "-";
-      }
-    },
-    formatStatus(){
-      return `${this.percent}% (${this.formatStakingLevel()}) + ${this.perks} Perks`;
-    },
-    formatUsedPerk(){
-      return `${this.perksUsed} / ${this.perks}`;
     },
     formatCurrency(value) {
       if (isNaN(value)) {

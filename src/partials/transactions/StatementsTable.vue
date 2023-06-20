@@ -2,7 +2,10 @@
 
   <!-- Filters -->
   <div class="sm:flex sm:justify-between sm:items-center mb-5">
-    <DropdownFilter v-model:sorter="sortedItems" @apply-sort="sortTransactions"/>
+    <div class="flex gap-3">
+      <DropdownFilter v-model:sorter="sortedItems" @apply-sort="sortTransactions"/>
+      <DropdownDownload :statements="statementsSorted" />
+    </div>
     <Datepicker v-model:date-start="dateStart" v-model:date-end="dateEnd" @refreshFilter="refreshFilter"/>
   </div>
 
@@ -60,7 +63,31 @@
           </tr>
           </thead>
           <!-- Table body -->
-          <tbody class="text-sm" v-if="isLoading"></tbody>
+          <tbody class="text-sm" v-if="isLoading">
+            <tr>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <div class="animate-pulse rounded-full bg-slate-200 h-10 w-10"></div>
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                    <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
+                </td>
+            </tr>
+          </tbody>
           <tbody class="text-sm" v-else>
           <StatementsTableItem
               v-for="statement in statementsSorted"
@@ -84,6 +111,7 @@ import {computed, ref, watch} from 'vue'
 import StatementsTableItem from './StatementsTableItem.vue'
 import Datepicker from "../../components/Datepicker.vue";
 import DropdownFilter from "../../components/DropdownFilter.vue";
+import DropdownDownload from "../../components/DropdownDownload.vue";
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 
@@ -92,6 +120,7 @@ export default {
   name: 'StatementsTable',
   components: {
     DropdownFilter,
+    DropdownDownload,
     StatementsTableItem,
     Datepicker
   },
@@ -103,7 +132,7 @@ export default {
     const selected = ref([]);
     const sortedItems = ref(new Set());
     const defaultSortedItem = ref(null);
-    const dateStart = ref(dayjs().subtract(1, 'month'))
+    const dateStart = ref(dayjs().subtract(1, 'month').subtract(15, 'days'))
     const dateEnd = ref(dayjs())
     const pendingReward = ref(0);
     const totalReward = ref(0);
@@ -121,21 +150,18 @@ export default {
 
     watch(selected, () => {
       selectAll.value = statements.value.length === selected.value.length
-      console.log("event change-selection");
       emit('change-selection', selected.value)
     });
 
     watch(statementsSorted, (value, oldValue, onCleanup) => {
-      //console.log("update");
       let tmp = statementsSorted.value;
       totalReward.value = tmp.map(cashback => cashback.cashback).reduce((sum, cashback) => sum + cashback.reduce((previousSum, cashback) => previousSum + parseFloat(cashback.amount),0),0).toFixed(2);
       totalCashback.value = tmp.map(cashback => cashback.cashback).reduce((sum, cashback) => sum + cashback.reduce((previousSum, cashback) => previousSum + ((((parseFloat(cashback.fiat_amount_rewarded??0) / 100) * (parseFloat(cashback.rebate_rate)/100))/parseFloat(cashback.amount)) * parseFloat(cashback.amount)),0),0).toFixed(2);
       cashbackAverage.value = totalCashback.value/totalReward.value;
       pendingReward.value = tmp.filter(statement => statement.status !== undefined && statement.status.value === 'pending').reduce((sum, statement) => sum +  parseFloat(statement.reward.value),0).toFixed(2);
+      isLoading.value = false;
     }, {immediate: true});
 
-
-    isLoading.value = false;
     return {
       selectAll,
       selected,

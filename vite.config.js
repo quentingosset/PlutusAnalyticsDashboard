@@ -20,8 +20,8 @@ export default defineConfig({
         ],
         overwrite: true
       }),
-      zipPack({inDir: 'extension_chrome/', outDir: 'extensions', outFileName: 'extension_chrome.zip'}),
-      zipPack({inDir: 'extension_firefox/', outDir: 'extensions', outFileName: 'extension_firefox.zip'}),
+      zipPack({inDir: 'extensions/extension_chrome/', outDir: 'extensions', outFileName: 'extension_chrome.zip'}),
+      zipPack({inDir: 'extensions/extension_firefox/', outDir: 'extensions', outFileName: 'extension_firefox.zip'}),
   ],
   resolve: {
     alias: [
@@ -37,6 +37,7 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
-    minify: true
+    minify: true,
+    sourcemap: true,
   }
 })

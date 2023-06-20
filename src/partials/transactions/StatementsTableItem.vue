@@ -1,6 +1,5 @@
 <template>
   <!-- Row -->
-  <!--<tr v-show="filter !== 'completed'" :class="{ viewportPendulum: filter === 'completed' }" class="tx" :id="`${order.id}`">-->
   <tr v-show="!hidden" :class="{ fadeOut: showFadeOutClass, fadeIn: showFadeInClass }" class="tx" :id="`${transaction.id}`" :data-debug="`${JSON.stringify(transaction)}`">
     <!--<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
       <div class="flex items-center">
@@ -14,7 +13,7 @@
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <div class="flex items-center text-slate-800">
         <div class="w-10 h-10 shrink-0 flex items-center justify-center bg-slate-100 rounded-full mr-2 sm:mr-3">
-          <img :src="typeIcon(transaction.type)" width="20" height="20" :alt="transaction.type"/>
+          <img :src="transaction.type._icon" width="20" height="20" :alt="transaction.type._statementType"/>
         </div>
       </div>
     </td>
@@ -33,7 +32,8 @@
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <Tooltip class="ml-2" size="sm" position="top" :display="transaction.reward.value > 0">
         <template v-slot:content>
-          <div class="text-left font-medium">{{ transaction.reward.text }}</div>
+          <div class="text-left font-medium" v-if="transaction.reward.value">{{ transaction.reward.value.toFixed(4) }} PLU</div>
+          <div class="text-left font-medium" v-else>-</div>
         </template>
         <template  v-slot:tooltip>
           <p class="text-xs whitespace-nowrap text-left" v-html="transaction.reward.tooltip.text"></p>
@@ -47,7 +47,10 @@
             {{ transaction.status.text }}
           </div>
         </template>
-        <template  v-slot:tooltip>
+        <template  v-slot:tooltip v-if="Object.keys(transaction.releaseDate).length !== 0">
+            <p class="text-xs whitespace-nowrap text-left">Reward available on : {{ formatDate(transaction.releaseDate.value) }}</p>
+        </template >
+        <template  v-slot:tooltip v-if="Object.keys(transaction.reason).length !== 0">
           <p class="text-xs whitespace-nowrap text-left">{{ transaction.status.tooltip.text }}</p>
         </template >
       </Tooltip>
@@ -69,11 +72,6 @@
       </div>
     </td>
   </tr>
-  <!--
-  Example of content revealing when clicking the button on the right side:
-  Note that you must set a "colSpan" attribute on the <td> element,
-  and it should match the number of columns in your table
-  -->
   <tr v-show="!hidden" :class="{ fadeOut: showFadeOutClass, fadeIn: showFadeInClass,  'hidden':!descriptionOpen }"
       class="tx-description" :id="`${transaction.id}`" role="region" v-if="transaction.cashback.length !== 0">
     <td colspan="10" class="px-2 first:pl-5 last:pr-5 py-3">
@@ -127,7 +125,7 @@
                 </div>
               </td>
               <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                <div class="text-left font-medium">{{transaction.reward.text}}</div>
+                <div class="text-left font-medium">{{cashback.amount.toFixed(4)}}</div>
               </td>
               <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                 <Tooltip class="ml-2" size="lg" position="top" :display="false">
@@ -194,15 +192,10 @@
 
 </style>
 <script>
-import {computed, ref} from 'vue'
-import Image29 from '../../images/icon-29.svg'
-import ImageDepositFundsReceived from '../../images/icon-FUNDS_RECEIVED.svg'
-import ImageDeclined from '../../images/icon-DECLINED.svg'
-import ImageShop from '../../images/icon-SHOP.svg'
-import ImageGift from '../../images/icon-GIFT.svg'
-import ImageWithdrawFee from '../../images/icon-WITHDRAW_FEE.svg'
+import {computed, ref, toRaw} from 'vue'
 import dayjs from 'dayjs';
 import Tooltip from "../../components/Tooltip.vue";
+import {StatementsType} from "../../utils/StatementsType";
 
 export default {name: 'StatementsTableItem', components: {
     Tooltip
@@ -215,47 +208,23 @@ export default {name: 'StatementsTableItem', components: {
     const hidden = ref(false);
     const showFadeOutClass = ref(false);
     const showFadeInClass = ref(true);
-    const sortedKeyword = ref(new Set());
-
-    function check() {
-      let updatedSelected = [...props.selected]
-      if (this.checked) {
-        updatedSelected.splice(updatedSelected.indexOf(props.value), 1)
-      } else {
-        updatedSelected.push(props.value)
-      }
-      context.emit('update:selected', updatedSelected)
-    }
-
+    const sortedKeyword = ref(props.statement.sortedKeyword);
     const descriptionOpen = ref(false)
-    const statusColor = () => {
-      switch (statement.value.type) {
-        case 'Approved':
-        case 'Completed':
-          return 'bg-emerald-100 text-emerald-600'
-        case 'Refunded':
-          return 'bg-slate-100 text-slate-500'
-        case 'Pending':
-        case '0':
-          return 'bg-amber-100 text-amber-600'
-        default:
-          //return 'bg-slate-100 text-slate-500'
-          return 'bg-emerald-100 text-emerald-600'
-      }
-    }
+
     const amountColor = () => {
-      switch (statement.value.type) {
-        case 'DEPOSIT_FUNDS_RECEIVED':
-        case '29':
-        case '35':
-        case '45':
+      switch (toRaw(statement.value.type)) {
+        case StatementsType.TOP_UP_ACCOUNT:
+        case StatementsType.TOP_UP_CARD:
+        case StatementsType.REFUNDED:
           return 'text-emerald-600'
-        case 'LOAD_PLUTUS_CARD_FROM_CJ_WALLET':
-        case 'PLUTUS_WALLET_WITHDRAW_FEE':
-        case 'ORDER_FULFILLED':
-        case '0':
-        case '5':
-        case '31':
+        case StatementsType.WITHDRAW_ACCOUNT_TO_CARD:
+        case StatementsType.WITHDRAW_FEE:
+        case StatementsType.DEX_BUY:
+        case StatementsType.IN_VALIDATION:
+        case StatementsType.DECLINED:
+        case StatementsType.COMPLETED:
+        case StatementsType.REWARDED:
+        case StatementsType.PENDING:
           return 'text-rose-600'
         default:
           return 'text-slate-500'
@@ -273,173 +242,12 @@ export default {name: 'StatementsTableItem', components: {
         return "Perk Reward";
       }
     }
-    const rewardAvailableColor = (status, reason) => {
-      if (status) {
-        return 'bg-emerald-100 text-emerald-600 fill-emerald-400';
-      } else if (status === false && reason != null) {
-        return 'bg-rose-100 text-rose-600 fill-rose-400'
-      } else {
-        return 'bg-amber-100 text-amber-600 fill-amber-400';
-      }
-
-    }
-
-    const initData = () => {
-      statement.value.status = {};
-      statement.value.status.tooltip = {};
-      statement.value.reason = {};
-      statement.value.releaseDate = {};
-      statement.value.reward = {};
-      statement.value.reward.tooltip = {};
-      initStatus();
-      initReward();
-
-    }
-
-    const initStatus = () => {
-      if(statement.value.type === 'LOAD_PLUTUS_CARD_FROM_CJ_WALLET'
-          || statement.value.type === 'DEPOSIT_FUNDS_RECEIVED'
-          || statement.value.type === 'PLUTUS_WALLET_WITHDRAW_FEE'
-          || statement.value.type === 'ORDER_FULFILLED') {
-        statement.value.status.value = 'no_reward';
-        statement.value.status.text = 'No Reward';
-        statement.value.status.style = 'bg-slate-100 text-slate-600';
-        sortedKeyword.value.add('no_reward');
-      } else if (statement.value.type === 'REBATE_BONUS') {
-        sortedKeyword.value.add('bonus');
-        statement.value.status.value = 'bonus';
-        statement.value.status.text = 'Bonus';
-        statement.value.status.style = 'bg-blue-100 text-blue-600';
-        let find = statement.value.cashback.find((cashback) => {return cashback.reason !== null});
-        statement.value.reason.value = find? find.reason : "-" ;
-        statement.value.status.tooltip.text = `Reason : ${statement.value.reason.value}`;
-      } else if (statement.value.type === '5') {
-        sortedKeyword.value.add('declined');
-        statement.value.status.value = 'declined';
-        statement.value.status.text = 'Declined';
-        statement.value.status.style = 'bg-rose-100 text-rose-600';
-      } else if (statement.value.type === '0' && statement.value.cashback.length === 0) {
-        sortedKeyword.value.add('validation');
-        statement.value.status.value = 'validation';
-        statement.value.status.text = 'In Validation';
-        statement.value.status.style = 'bg-amber-100 text-amber-600';
-      } else if (statement.value.cashback.length > 0 && statement.value.cashback.find((cashback) => {return cashback.available === false && cashback.reason !== null})) {
-        sortedKeyword.value.add('rejected');
-        statement.value.status.value = 'rejected';
-        statement.value.status.text = 'Rejected';
-        statement.value.status.style = 'bg-rose-100 text-rose-600';
-        statement.value.reason.value = statement.value.cashback.find((cashback) => {return cashback.available === false && cashback.reason !== null}).reason;
-        statement.value.status.tooltip.text = `Reason : ${statement.value.reason.value}`;
-      } else if (statement.value.cashback.length > 0 && statement.value.cashback.find((cashback) => {return cashback.available === false})) {
-        sortedKeyword.value.add('pending');
-        let releaseDate = dayjs(statement.value.cashback.find((cashback) => {return cashback.available === false}).createdAt).add(45, 'day').format('DD MMMM YYYY, HH:mm');
-        statement.value.status.value = 'pending';
-        statement.value.status.text = 'Pending';
-        statement.value.status.style = 'bg-amber-100 text-amber-600';
-        statement.value.releaseDate.value = releaseDate;
-        statement.value.status.tooltip.text = `Reward available on : ${releaseDate}`;
-      } else if (statement.value.cashback.length > 0 && statement.value.cashback.find((cashback) => {return cashback.available === true})) {
-        statement.value.status.value = 'rewarded';
-        statement.value.status.text = 'Rewarded';
-        statement.value.status.style = 'bg-emerald-100 text-emerald-600';
-        sortedKeyword.value.add('rewarded');
-        sortedKeyword.value.add('completed');
-      } else if (statement.value.type === '45' || statement.value.type === '35') {
-        statement.value.status.value = 'refunded';
-        statement.value.status.text = 'Refunded';
-        statement.value.status.style = 'bg-slate-100 text-slate-600';
-        sortedKeyword.value.add('refunded');
-      } else {
-        statement.value.status.value = 'no_reward';
-        statement.value.status.text = 'No Reward';
-        statement.value.status.style = 'bg-slate-100 text-slate-600';
-        sortedKeyword.value.add('no_reward');
-      }
-    }
-    const initReward = () => {
-      if (statement.value.cashback.length === 0) {
-        statement.value.reward.value = 0;
-        statement.value.reward.text = "-";
-        statement.value.reward.tooltip.text = "TOOLTIP";
-      } else {
-        let amount = statement.value.cashback.reduce(function (tot, cashback) {
-          return tot + parseFloat(cashback.amount);
-        }, 0).toFixed(4);
-        let txCashback = statement.value.cashback.find(Boolean);
-        let PLURate = ((parseFloat(txCashback.fiat_amount_rewarded??0) / 100) * (parseFloat(txCashback.rebate_rate)/100))/parseFloat(txCashback.amount);
-        statement.value.reward.value = amount;
-        statement.value.reward.text = amount + " PLU";
-        statement.value.reward.tooltip.text = `Rate: ${formatCurrency(PLURate)}/PLU<br>Cashback: ${formatCurrency(amount*PLURate)}`;
-      }
-    }
-
-    // TODO REMOVE
-    const rewardAmount = (value) => {
-      if (value === undefined) {
-        if (statement.value.cashback.length === 0) {
-          return "-";
-        } else {
-          let amount = statement.value.cashback.reduce(function (tot, cashback) {
-            return tot + parseFloat(cashback.amount);
-          }, 0).toFixed(4);
-          if (amount > 0) {
-            return amount + " PLU";
-          }
-          return 0;
-        }
-      } else {
-        return parseFloat(value).toFixed(4) + " PLU";
-      }
-    }
-
-    const typeIcon = (type) => {
-      switch (type) {
-        case "29":
-        case "LOAD_PLUTUS_CARD_FROM_CJ_WALLET":
-          return Image29
-        case "DEPOSIT_FUNDS_RECEIVED":
-          return ImageDepositFundsReceived
-        case "5":
-          return ImageDeclined
-        case "0":
-        case "31":
-          return ImageShop
-        case "45":
-        case "35":
-          return ImageShop
-        case "REBATE_BONUS":
-          return ImageGift
-        case "PLUTUS_WALLET_WITHDRAW_FEE":
-        case "ORDER_FULFILLED":
-          return ImageWithdrawFee
-      }
-    }
-
-    initData();
-
-    function formatCurrency(value){
-      if (isNaN(value)) {
-        return '';
-      }
-
-      var formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: localStorage.getItem('local_currency'),
-        minimumFractionDigits: 2
-      });
-      return formatter.format(value);
-    }
 
     return {
-      check,
       checked,
       isLoading,
-      statusColor,
       amountColor,
-      typeIcon,
       descriptionOpen,
-      rewardAvailableColor,
-      rewardAmount,
       transactionTypeText,
       hidden,
       showFadeOutClass,
@@ -452,7 +260,7 @@ export default {name: 'StatementsTableItem', components: {
     formatDate(dateString) {
       const date = dayjs(dateString);
       // Then specify how you want your dates to be formatted
-      return date.format('DD MMMM YYYY, HH:mm');
+      return date.format('DD MMMM YYYY');
     },
     formatCurrency(value) {
       if (isNaN(value)) {

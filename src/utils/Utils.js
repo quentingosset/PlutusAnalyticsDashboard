@@ -1,4 +1,6 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
+import {Parser} from "@json2csv/plainjs";
+import numberFormatter from "@json2csv/formatters/number";
 
 export const tailwindConfig = () => {
   // Tailwind config
@@ -48,3 +50,36 @@ export const formatThousands = (value) => Intl.NumberFormat('en-US', {
   maximumSignificantDigits: 3,
   notation: 'compact',
 }).format(value);
+
+
+export const downloadObjectAs = (exportObj, exportName, format) => {
+  if (format === "JSON") {
+    return downloadObjectAsJson(exportObj,exportName);
+  } else if (format === "CSV"){
+    return downloadObjectAsCSV(exportObj,exportName);
+  }
+}
+const downloadObjectAsJson = (exportObj, exportName) => {
+  let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+  let downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href",     dataStr);
+  downloadAnchorNode.setAttribute("download", exportName + ".json");
+  document.body.appendChild(downloadAnchorNode); // required for firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+}
+
+const downloadObjectAsCSV = (exportObj, exportName) => {
+  const parser = new Parser({
+        delimiter: '|',
+        formatters: { number: numberFormatter({ decimals: 3, separator: ',' })}
+  });
+  const csv = parser.parse(exportObj);
+  let dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+  let downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href",     dataStr);
+  downloadAnchorNode.setAttribute("download", exportName + ".csv");
+  document.body.appendChild(downloadAnchorNode); // required for firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+}
