@@ -1,6 +1,6 @@
 {
   "name": "Plutus Analytics Dashboard",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "dev": "vite --mode development",
     "build": "vite build --mode production",
