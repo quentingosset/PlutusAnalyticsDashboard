@@ -38,7 +38,7 @@
 
             <div class="space-y-2">
               <!-- Table -->
-              <TransactionsTable v-if="statements.length > 0" :statements=statements />
+              <TransactionsTable v-if="storeStatement.statements.length > 0" :statements=storeStatement.statements />
             </div>
           </div>
 
@@ -57,15 +57,13 @@
 import {ref} from 'vue'
 import Sidebar from '../partials/Sidebar.vue'
 import Header from '../partials/Header.vue'
-import {getAllStatements, getUserProfile} from "../utils/PlutusCall";
+import {getUserProfile} from "../utils/PlutusCall";
 import TransactionsTable from "../partials/transactions/StatementsTable.vue";
 import Tooltip from "../components/Tooltip.vue";
 import ModalBasic from "../components/ModalBasic.vue";
-import dayjs from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
-import {StatementsType} from "../utils/StatementsType";
 import {SubscriptionType} from "../utils/SubscriptionType";
 import CardSidebar from "../components/CardSidebar.vue";
+import {statementStore} from "../stores/statement";
 
 export default {
   name: 'Transactions',
@@ -80,17 +78,14 @@ export default {
     Header,
     TransactionsTable,
     Tooltip,
-      ModalBasic
+    ModalBasic
   },
   setup() {
-    const isLoading = ref(true);
     const sidebarOpen = ref(false)
-    const spendingMonthlyLimit = ref(0);
-    const statements = ref([]);
     const cardSidebarOpen = ref(true)
-    const updateSelectedItems = (selected) => {
-      selectedItems.value = selected
-    };
+
+    const storeStatement = statementStore()
+    storeStatement.fetchStatements();
 
     getUserProfile().then(value => {
       localStorage.setItem('local_currency',value?.local_currency??"USD");
@@ -98,31 +93,10 @@ export default {
       localStorage.setItem('last_name',value?.personal_details.last_name??"LAST_NAME");
     });
 
-      getAllStatements().then(value => {
-      dayjs.extend(isBetween);
-
-      statements.value = value;
-
-      let spendingMonthlyLimits = value.filter((value) => {return (dayjs(value.date).isBetween(dayjs().subtract(1, 'month'),dayjs(),null, '[]')
-          && !StatementsType.TOP_UP_CARD.is(value.type)
-          && !StatementsType.WITHDRAW_ACCOUNT_TO_CARD.is(value.type)
-          && !StatementsType.TOP_UP_ACCOUNT.is(value.type)
-          && !StatementsType.WITHDRAW_FEE.is(value.type)
-          && !StatementsType.DEX_BUY.is(value.type)
-      )});
-      spendingMonthlyLimit.value = spendingMonthlyLimits.reduce((sum, transaction) => {
-        return sum + (transaction.amount / 100);
-      },0);
-        isLoading.value = false;
-    });
-
 
     return {
-      isLoading,
       sidebarOpen,
-      updateSelectedItems,
-      spendingMonthlyLimit,
-      statements,
+      storeStatement,
       cardSidebarOpen
     }
   }

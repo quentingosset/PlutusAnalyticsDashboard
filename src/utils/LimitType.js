@@ -1,4 +1,5 @@
-export class SubscriptionType {
+export class LimitType {
+    // TODO TOUT MODIFIER ICI POUR GERER LES LIMITE : https://plutus.it/fees
     static STARTER = new SubscriptionType('starter',0, 3,250,1,1);
     static EVERYDAY = new SubscriptionType('everyday',4.99, 3,2000,2,0);
     static PREMIUM = new SubscriptionType('premium',14.99, 3,22500,3,0);

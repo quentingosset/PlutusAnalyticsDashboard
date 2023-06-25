@@ -134,6 +134,9 @@ export default {
     return {
       sidebarOpen,
     }
+  },
+  mounted() {
+    console.log("mount");
   }
 }
 </script>

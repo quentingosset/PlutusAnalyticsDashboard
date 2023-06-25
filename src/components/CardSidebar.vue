@@ -103,16 +103,16 @@
                   <img :src="logoCard" style="width: 48px;">
                   <!-- Card number -->
                   <div class="flex justify-between text-lg font-bold text-slate-200 tracking-widest drop-shadow-sm">
-                    <span v-if="isLoading" class="animate-pulse h-4 w-60 bg-slate-200 rounded">****-****-****-****</span>
-                    <span v-else>{{cardNumber}}</span>
+                    <span v-if="loading" class="animate-pulse h-4 w-60 bg-slate-200 rounded">****-****-****-****</span>
+                    <span v-else>{{storeCard.cardNumber}}</span>
                   </div>
                   <!-- Card footer -->
                   <div class="relative flex justify-between items-center z-10 mb-0.5">
                     <!-- Card expiration -->
                     <div class="text-sm font-bold text-slate-200 tracking-widest drop-shadow-sm space-x-3">
-                      <span v-if="isLoading" class="animate-pulse h-3 w-24 bg-slate-200 rounded">EXP **/**</span>
-                      <span v-else>EXP {{cardExpiration}}</span>
-                      <span v-if="isLoading" class="animate-pulse h-3 w-24 bg-slate-200 rounded">EXP **/**</span>
+                      <span v-if="loading" class="animate-pulse h-3 w-24 bg-slate-200 rounded">EXP **/**</span>
+                      <span v-else>EXP {{storeCard.cardExpiration}}</span>
+                      <span v-if="loading" class="animate-pulse h-3 w-24 bg-slate-200 rounded">EXP **/**</span>
                       <span v-else>CVC ***</span>
                     </div>
                   </div>
@@ -130,26 +130,26 @@
                 <ul>
                   <li class="flex items-center justify-between py-3 border-b border-slate-200">
                     <div class="text-sm">Card Balance</div>
-                    <div v-show="isLoading" class="animate-pulse h-3 w-14 bg-slate-200 rounded"></div>
-                    <div v-show="!isLoading" class="text-sm font-medium text-slate-800 ml-2">{{ formatCurrency(availableBalance / 100) }}</div>
+                    <div v-show="loading" class="animate-pulse h-3 w-14 bg-slate-200 rounded"></div>
+                    <div v-show="!loading" class="text-sm font-medium text-slate-800 ml-2">{{ formatCurrency(storeBalance.userAvailableBalance / 100) }}</div>
                   </li>
                   <li class="flex items-center justify-between py-3 border-b border-slate-200">
                     <div class="text-sm">Subscription</div>
-                    <div v-show="isLoading" class="animate-pulse h-3 w-24 bg-slate-200 rounded"></div>
-                    <div v-show="!isLoading" class="flex items-center justify-between">
+                    <div v-show="loading" class="animate-pulse h-3 w-24 bg-slate-200 rounded"></div>
+                    <div v-show="!loading" class="flex items-center justify-between">
                       <div class="cursor-pointer" v-html="expirationSubscription()" @click.stop="infoModalSubscriptionOpen = true"></div>
-                      <div class="cursor-pointer text-sm font-medium text-slate-800 ml-2 mr-2 capitalize" @click.stop="infoModalSubscriptionOpen = true">{{ subscriptionPlan }}</div>
+                      <div class="cursor-pointer text-sm font-medium text-slate-800 ml-2 mr-2 capitalize" @click.stop="infoModalSubscriptionOpen = true">{{ storeSubscription.subscriptionPlan?.name }}</div>
                     </div>
                   </li>
                   <li class="flex items-center justify-between py-3 border-b border-slate-200">
                     <div class="text-sm">Status</div>
-                    <div v-show="isLoading" class="animate-pulse h-3 w-24 bg-slate-200 rounded"></div>
-                    <div v-show="!isLoading" class="text-sm font-medium text-slate-800 ml-2">{{`${this.stakingLevel._percent}% (${this.stakingLevel._name}) + ${this.perks} Perks`}}</div>
+                    <div v-show="loading" class="animate-pulse h-3 w-24 bg-slate-200 rounded"></div>
+                    <div v-show="!loading" class="text-sm font-medium text-slate-800 ml-2">{{`${storePerk.stakingLevel?.percent}% (${storePerk.stakingLevel?.name}) + ${storePerk.perksGranted} Perks`}}</div>
                   </li>
                   <li class="flex items-center justify-between py-3 border-b border-slate-200">
                     <div class="text-sm">Perks used</div>
-                    <div v-show="isLoading" class="animate-pulse h-3 w-14 bg-slate-200 rounded"></div>
-                    <div v-show="!isLoading" class="text-sm font-medium text-slate-800 ml-2">{{`${this.perksUsed} / ${this.perks}`}}</div>
+                    <div v-show="loading" class="animate-pulse h-3 w-14 bg-slate-200 rounded"></div>
+                    <div v-show="!loading" class="text-sm font-medium text-slate-800 ml-2">{{`${storePerk.usedPerks.length} / ${storePerk.perksGranted}`}}</div>
                   </li>
                 </ul>
               </div>
@@ -160,12 +160,12 @@
                 <div class="pb-4 border-b border-slate-200">
                   <div class="flex justify-between text-sm mb-2">
                     <div>Cashback This Month</div>
-                    <div v-show="isLoading" class="animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
-                    <div v-show="!isLoading" class="italic"> {{ formatCurrency(monthlyReward) }} <span class="text-slate-400">/</span> {{ formatCurrency(cashbackLimit) }}</div>
+                    <div v-show="loading" class="animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
+                    <div v-show="!loading" class="italic"> {{ formatCurrency(storeReward.monthlyReward) }} <span class="text-slate-400">/</span> {{ formatCurrency(storeSubscription.cashbackLimit) }}</div>
                   </div>
-                  <div v-show="isLoading" class="relative w-full h-2 animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
-                  <div v-show="!isLoading" class="relative w-full h-2 bg-slate-300">
-                    <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="cashbackMonthlyLimitPercent(monthlyReward,cashbackLimit)"></div>
+                  <div v-show="loading" class="relative w-full h-2 animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
+                  <div v-show="!loading" class="relative w-full h-2 bg-slate-300">
+                    <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="cashbackMonthlyLimitPercent(storeReward.monthlyReward,storeSubscription.cashbackLimit)"></div>
                   </div>
                 </div>
               </div>
@@ -175,12 +175,12 @@
                 <div class="pb-4 border-b border-slate-200">
                   <div class="flex justify-between text-sm mb-2">
                     <div>Monthly spent</div>
-                    <div v-show="isLoading" class="animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
-                    <div v-show="!isLoading" class="italic"> {{ formatCurrency(spendingMonthlyLimit) }} <span class="text-slate-400">/</span> {{ formatCurrency(monthlySpendLimit) }}</div>
+                    <div v-show="loading" class="animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
+                    <div v-show="!loading" class="italic"> {{ formatCurrency(storeStatement.monthlySpend) }} <span class="text-slate-400">/</span> {{ formatCurrency(0) }}</div>
                   </div>
-                  <div v-show="isLoading" class="relative w-full h-2 animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
-                  <div v-show="!isLoading" class="relative w-full h-2 bg-slate-300">
-                    <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="spendingMonthlyLimitPercent(spendingMonthlyLimit,monthlySpendLimit)"></div>
+                  <div v-show="loading" class="relative w-full h-2 animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
+                  <div v-show="!loading" class="relative w-full h-2 bg-slate-300">
+                    <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="spendingMonthlyLimitPercent(0,0)"></div>
                   </div>
                 </div>
               </div>
@@ -221,13 +221,13 @@
         <!-- Options -->
         <ul class="space-y-2 mb-4">
           <li v-for="subscription in SubscriptionType">
-            <button class="w-full h-full text-left py-3 px-4 rounded bg-white shadow-sm duration-150 ease-in-out" :class="(subscription.name === subscriptionPlan)?'border-2 border-indigo-400' : 'border border-slate-200 hover:border-slate-300' ">
+            <button class="w-full h-full text-left py-3 px-4 rounded bg-white shadow-sm duration-150 ease-in-out" :class="(subscription.name === storeSubscription.subscriptionPlan?.name)?'border-2 border-indigo-400' : 'border border-slate-200 hover:border-slate-300' ">
               <div class="flex items-center">
                 <div class="grow">
                   <div class="flex flex-wrap items-center justify-between mb-0.5">
                                             <span class="font-medium text-slate-800 first-letter:uppercase">{{subscription.name}}
-                                                <span v-if="(subscription.name === subscriptionPlan)" class="text-xs italic text-slate-500 align-top text-xs italic text-indigo-500 align-top">Current Subscription</span>
-                                                <span v-if="(subscription.name === subscriptionPlanDesired)" class="text-xs italic text-indigo-500 align-top">Apply next renew</span>
+                                              <span v-if="(subscription.name === storeSubscription.subscriptionPlan?.name)" class="text-xs italic text-slate-500 align-top text-xs italic text-indigo-500 align-top">Current Subscription</span>
+                                                <span v-if="(subscription.name === storeSubscription.subscriptionDesired?.name)" class="text-xs italic text-indigo-500 align-top">Apply next renew</span>
                                             </span>
                     <span><span class="font-medium text-emerald-600">{{formatCurrency(subscription.amount)}}</span>/mo</span>
                   </div>
@@ -237,7 +237,7 @@
             </button>
           </li>
         </ul>
-        <div class="text-xs text-slate-500">Your {{subscriptionPlan}} subscription will renew on : <b>{{ formatDate(subscriptionEnd) }}</b>.</div>
+        <div class="text-xs text-slate-500">Your {{storeSubscription.subscriptionPlan?.name}} subscription will renew on : <b>{{ formatDate(storeSubscription.subscriptionEnd) }}</b>.</div>
       </div>
     </div>
     <!-- Modal footer -->
@@ -253,12 +253,15 @@
 <script>
 import dayjs from "dayjs";
 import {ref} from "vue";
-import {getBalance, getPlutusCard, getRewards, getSubscription, getUserPerks} from "../utils/PlutusCall";
 import ModalBasic from "./ModalBasic.vue";
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
-import {StakingTier} from "../utils/StakingTier";
 import {SubscriptionType} from "../utils/SubscriptionType";
 import logoCard from '../images/logo_card.png'
+import {cardStore} from '../stores/card'
+import {balanceStore} from "../stores/balance";
+import {rewardStore} from "../stores/reward";
+import {subscriptionStore} from "../stores/subscription";
+import {statementStore} from "../stores/statement";
+import {perkStore} from "../stores/perk";
 
 export default {
   name: 'CardSidebar',
@@ -270,108 +273,29 @@ export default {
   components: {ModalBasic},
   props: ['cardSidebarOpen'],
   setup() {
-    const isLoading = ref(true);
-    const cardNumber = ref(null)
-    const cardExpiration = ref(null)
-    const availableBalance = ref(0)
+    const loading = ref(true);
     const infoModalSubscriptionOpen = ref(false)
-    const subscriptionPlan = ref(null)
-    const subscriptionPlanDesired = ref(null)
-    const stakingLevel = ref(0)
-    const cashbackUpTo = ref(0)
-    const perks = ref(0)
-    const perksUsed = ref([])
-    const cashbackLimit = ref(0)
-    const monthlyReward = ref(0)
-    const spendingMonthlyLimit = ref(0)
-    const monthlySpendLimit = ref(0)
-    const subscriptionEnd = ref(null)
+    const storeCard = cardStore()
+    const storeBalance = balanceStore();
+    const storeReward = rewardStore();
+    const storeSubscription = subscriptionStore();
+    const storeStatement = statementStore();
+    const storePerk = perkStore();
 
-    const checkCard = async () => {
-      const [userCardStatus, userCardNumber, userCardExpiration] = await getPlutusCard().then(userCard => [userCard.status, userCard.card_number, userCard.expiry_date.substring(0, userCard.expiry_date.length - 2) + "/" + userCard.expiry_date.substring(userCard.expiry_date.length - 2)]);
-      cardNumber.value = userCardNumber;
-      cardExpiration.value = userCardExpiration;
-    }
-
-    const checkPerks = async () => {
-      dayjs.extend(isSameOrAfter);
-      const isPerkTransaction = transaction => dayjs(transaction.createdAt).isSameOrAfter(dayjs().startOf('month'),'month') && transaction.reference_type.indexOf('perk') >= 0;
-      const perkTransactionsOfCurrentMonth = await getRewards().then(result => result.filter(isPerkTransaction));
-      const [userPerks, perksGranted, userStakingLevel, perksNextMonth] = await getUserPerks().then(userPerks => [userPerks.perks, userPerks.total_perks_granted, StakingTier.init(userPerks.staking_level), userPerks.next_month_perks]);
-      const isUsedPerk = (transaction, perk) => transaction.reference_type === `perk_${perk.id}_reward`;
-      const usedPerks = userPerks.filter(perk => perkTransactionsOfCurrentMonth.some(transaction => isUsedPerk(transaction, perk)));
-      const unusedPerks = userPerks.filter(perk => perkTransactionsOfCurrentMonth.every(transaction => !isUsedPerk(transaction, perk)));
-
-      perksUsed.value = usedPerks.length;
-      perks.value = perksGranted;
-      stakingLevel.value = userStakingLevel;
-
-      cashbackLimit.value = cashbackUpTo.value*(stakingLevel.value._percent/100)
-    }
-
-    const checkSubscriptionInformations = async ()  => {
-      const [userSubscriptionPlan, userSubscriptionDesired, userSubscriptionEnd] = await getSubscription().then(userSubscription => [userSubscription.plan, userSubscription.desired_plan ,userSubscription.ends_on]);
-
-      subscriptionPlan.value = userSubscriptionPlan;
-      subscriptionPlanDesired.value = userSubscriptionDesired;
-      subscriptionEnd.value = userSubscriptionEnd;
-
-      setSubscriptionInformations();
-    }
-
-    const checkBalance = async () => {
-      const [userAccountBalance, userAvailableBalance, userCreditHoldBalance, userDebitHoldBalance] = await getBalance().then(userBalance => [userBalance.AccountBalance, userBalance.AvailableBalance , userBalance.CreditHoldBalance, userBalance.DebitHoldBalance]);
-      availableBalance.value = userAvailableBalance;
-    }
-
-    function setSubscriptionInformations(){
-      if(subscriptionPlan.value === "starter"){
-        monthlySpendLimit.value = 5000;
-        cashbackUpTo.value = 250;
-        cashbackLimit.value = cashbackUpTo.value*(3/100);
-      } else if(subscriptionPlan.value === "everyday"){
-        monthlySpendLimit.value = 15500;
-        cashbackUpTo.value = 2000;
-        cashbackLimit.value = cashbackUpTo.value*(3/100);
-      } else if(subscriptionPlan.value === "premium"){
-        monthlySpendLimit.value = 22500;
-        cashbackUpTo.value = 22500;
-        cashbackLimit.value = cashbackUpTo.value*(3/100);
-      }
-    }
-
-    const checkTransactions = async () => {
-      dayjs.extend(isSameOrAfter);
-      const rewardTransactions = await getRewards().then(result => result);
-      const isCurrentMonthTransaction = transaction => dayjs(transaction.createdAt).isSameOrAfter(dayjs(),'month');
-      const rewardTransactionsOfCurrentMonth = rewardTransactions.filter(isCurrentMonthTransaction);
-
-      monthlyReward.value = rewardTransactionsOfCurrentMonth.reduce((sum, cashback) => {
-        return sum + ((cashback.fiat_amount_rewarded / 100) * (cashback.rebate_rate / 100));
-      },0);
-
-    }
-
-    Promise.all([checkCard(),checkSubscriptionInformations(),checkBalance(),checkPerks(),checkTransactions()]).then((values) => {
-      isLoading.value = false;
+    Promise.all([storeCard.fetchCard(),storeBalance.fetchBalance(),storeReward.fetchRewards(),storeSubscription.fetchSubscription(),storePerk.fetchUsersPerks()]).then((values) => {
+      loading.value = false;
     });
 
+
     return {
-      isLoading,
-      cardNumber,
-      cardExpiration,
-      availableBalance,
+      loading,
+      storeCard,
+      storeBalance,
+      storeReward,
+      storeSubscription,
+      storeStatement,
+      storePerk,
       infoModalSubscriptionOpen,
-      subscriptionPlan,
-      subscriptionPlanDesired,
-      stakingLevel,
-      perks,
-      perksUsed,
-      cashbackLimit,
-      monthlyReward,
-      spendingMonthlyLimit,
-      monthlySpendLimit,
-      subscriptionEnd,
       logoCard
     }
   },
@@ -381,8 +305,8 @@ export default {
       // Then specify how you want your dates to be formatted
       return date.format('D MMMM YYYY, HH:mm');
     },
-    expirationSubscription(){
-      const dateExpiration = dayjs(this.subscriptionEnd);
+    expirationSubscription(subscriptionEnd){
+      const dateExpiration = dayjs(subscriptionEnd);
       const dateNow = dayjs();
       const diff = dateExpiration.diff(dateNow, 'd');
       if(diff >= 8){

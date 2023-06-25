@@ -16,6 +16,7 @@
     "isotope-layout": "^3.0.6",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "pinia": "^2.1.4",
     "vue": "^3.2.47",
     "vue-flatpickr-component": "^9.0.6",
     "vue-router": "^4.1.6",
