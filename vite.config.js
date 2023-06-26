@@ -2,6 +2,7 @@ import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import copy from "rollup-plugin-copy";
 import zipPack from "vite-plugin-zip-pack";
+import cleanPlugin from 'vite-plugin-clean';
 import fs from "fs";
 
 const packageJson = fs.readFileSync('./package.json')
@@ -27,6 +28,7 @@ export default defineConfig({
       }),
       zipPack({inDir: 'extensions/extension_chrome/', outDir: 'extensions', outFileName: 'extension_chrome.zip'}),
       zipPack({inDir: 'extensions/extension_firefox/', outDir: 'extensions', outFileName: 'extension_firefox.zip'}),
+      cleanPlugin({targetFiles: ['extensions']})
   ],
   resolve: {
     alias: [
