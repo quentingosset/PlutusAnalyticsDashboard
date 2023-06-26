@@ -3,7 +3,7 @@
     <!--btn-xs bg-indigo-500 hover:bg-indigo-600 text-white-->
     <button
       ref="trigger"
-      class="btn-xs justify-between min-w-28 bg-white border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-600"
+      class="btn-xs justify-between rounded-none min-w-28 bg-white border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-600"
       aria-label="Select date range"
       aria-haspopup="true"
       @click.prevent="dropdownOpen = !dropdownOpen"
@@ -24,7 +24,7 @@
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-show="dropdownOpen" class="z-10 absolute bottom-full left-0 w-20 bg-white border border-slate-200 py-1.5 rounded shadow-lg overflow-hidden mt-1">
+      <div v-show="dropdownOpen" class="z-10 absolute bottom-full left-0 w-20 bg-white border border-slate-200 py-1.5 rounded-none shadow-lg overflow-hidden mt-1">
         <div
           ref="dropdown"
           class="font-medium text-sm text-slate-600"

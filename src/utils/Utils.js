@@ -51,6 +51,21 @@ export const formatThousands = (value) => Intl.NumberFormat('en-US', {
   notation: 'compact',
 }).format(value);
 
+export const mergeArrays = (arr1, arr2, mergeKey) => {
+  const merged = [...arr2];
+
+  arr1.forEach((item) => {
+    const existingItem = merged.find((el) => el[mergeKey] === item[mergeKey]);
+
+    if (existingItem) {
+      Object.assign(existingItem, item);
+    } else {
+      merged.push(item);
+    }
+  });
+
+  return merged;
+};
 
 export const downloadObjectAs = (exportObj, exportName, format) => {
   if (format === "JSON") {
@@ -82,4 +97,17 @@ const downloadObjectAsCSV = (exportObj, exportName) => {
   document.body.appendChild(downloadAnchorNode); // required for firefox
   downloadAnchorNode.click();
   downloadAnchorNode.remove();
+}
+
+export const formatCurrency = (value) => {
+  if (isNaN(value)) {
+    return '';
+  }
+
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: localStorage.getItem('local_currency'),
+    minimumFractionDigits: 2
+  });
+  return formatter.format(value);
 }

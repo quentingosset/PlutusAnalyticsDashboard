@@ -4,7 +4,8 @@ import subscription from '../data/subscription.json';
 import statements from '../data/statements.json';
 import withdrawals from '../data/withdrawals.json';
 import balance from '../data/balance.json';
-import perk from '../data/perk.json';
+import userPerk from '../data/UserPerk.json';
+import perks from '../data/perks.json';
 import profile from '../data/profile.json';
 import {StatementsType} from "./StatementsType";
 import _ from 'lodash';
@@ -173,7 +174,29 @@ export async function getUserPerks() {
             })
             .catch(err => console.warn(err));
     }else{
-        return _.cloneDeep(perk);
+        return _.cloneDeep(userPerk);
+    }
+}
+
+export async function getAllPerks(){
+    if(import.meta.env.MODE === "production") {
+        var header = new Headers();
+        header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
+
+        var requestOptions = {
+            method: 'GET',
+            headers: header,
+            redirect: 'follow'
+        };
+
+        return await fetch("https://api.plutus.it/platform/configurations/perks", requestOptions)
+            .then(response => response.json())
+            .then(jsonResponse => {
+                return jsonResponse.perks;
+            })
+            .catch(err => console.warn(err));
+    }else{
+        return _.cloneDeep(perks.perks);
     }
 }
 
@@ -250,7 +273,6 @@ export async function getAllStatements(){
 }
 
 const initStatus = (value) => {
-    //console.log(value,new Date());
     value.status = {};
     value.status.tooltip = {};
     value.reason = {};

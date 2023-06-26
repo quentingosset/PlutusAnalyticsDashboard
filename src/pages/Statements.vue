@@ -9,7 +9,7 @@
 
       <!-- Site header -->
       <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen"
-              :cardSidebarOpen="cardSidebarOpen" @toggle-cardsidebar="cardSidebarOpen = !cardSidebarOpen" />
+              :cardSidebarOpen="storeGlobal.cardSidebarOpen" @toggle-cardsidebar="storeGlobal.cardSidebarOpen = !storeGlobal.cardSidebarOpen" />
 
       <main>
 
@@ -27,12 +27,14 @@
               </div>
 
               <!-- Add card button -->
-              <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-                <svg class="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
-                  <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
-                </svg>
-                <span class="hidden xs:block ml-2">My Perks</span>
-              </button>
+              <router-link to="/perks">
+                <button class="btn bg-indigo-500 rounded-none hover:bg-indigo-600 text-white">
+                  <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 16 16">
+                    <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
+                  </svg>
+                  <span class="hidden xs:block ml-2">My Perks</span>
+                </button>
+              </router-link>
 
             </div>
 
@@ -42,7 +44,7 @@
             </div>
           </div>
 
-          <CardSidebar :cardSidebarOpen="cardSidebarOpen"/>
+          <CardSidebar :cardSidebarOpen="storeGlobal.cardSidebarOpen"/>
 
         </div>
 
@@ -64,9 +66,10 @@ import ModalBasic from "../components/ModalBasic.vue";
 import {SubscriptionType} from "../utils/SubscriptionType";
 import CardSidebar from "../components/CardSidebar.vue";
 import {statementStore} from "../stores/statement";
+import {globalStore} from "../stores/global";
 
 export default {
-  name: 'Transactions',
+  name: 'Statements',
     computed: {
         SubscriptionType() {
             return Object.values(SubscriptionType)
@@ -82,8 +85,8 @@ export default {
   },
   setup() {
     const sidebarOpen = ref(false)
-    const cardSidebarOpen = ref(true)
 
+    const storeGlobal = globalStore()
     const storeStatement = statementStore()
     storeStatement.fetchStatements();
 
@@ -97,7 +100,7 @@ export default {
     return {
       sidebarOpen,
       storeStatement,
-      cardSidebarOpen
+      storeGlobal
     }
   }
 }

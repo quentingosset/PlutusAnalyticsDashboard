@@ -2,7 +2,7 @@
     <div ref="dropdownDownload" class="relative inline-flex">
         <button
                 ref="trigger"
-                class="btn bg-white border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-600"
+                class="btn rounded-none bg-white border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-600"
                 aria-haspopup="true"
                 @click.prevent="dropdownOpen = !dropdownOpen"
                 :aria-expanded="dropdownOpen"
@@ -22,7 +22,7 @@
                 leave-to-class="opacity-0"
         >
             <div v-show="dropdownOpen"
-                 class="origin-top-right z-10 absolute top-full min-w-44 bg-white border border-slate-200 pt-1.5 rounded shadow-lg overflow-hidden mt-1"
+                 class="origin-top-right z-10 absolute top-full min-w-44 bg-white border border-slate-200 pt-1.5 shadow-lg overflow-hidden mt-1"
                  :class="align === 'right' ? 'right-0' : 'left-0'">
                 <div ref="dropdown">
                     <div class="text-xs font-semibold text-slate-400 uppercase pt-1.5 pb-2 px-4">Reports</div>
@@ -56,7 +56,7 @@
                                 <DropdownClassic :options="options" v-model:selected="selected"/>
                             </li>
                             <li>
-                                <button class="btn-xs bg-indigo-500 hover:bg-indigo-600 text-white" @click="apply"
+                                <button class="btn-xs bg-indigo-500 rounded-none hover:bg-indigo-600 text-white" @click="apply"
                                         @focusout="dropdownOpen = false">Download
                                 </button>
                             </li>
@@ -138,7 +138,6 @@ export default {
             checked = new Set([...checked].map(formatValue => formatValue.dataset.filter));
             if(checked.size){
                 checked.forEach(value => {
-                    console.log(value);
                     let tmp = JSON.parse(JSON.stringify(statements.value));
                     if (ReportsType.STATEMENTS.is(value)) {
                         tmp.map(statement => {

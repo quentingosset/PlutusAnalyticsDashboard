@@ -2,7 +2,7 @@
   <div ref="dropdownFilter" class="relative inline-flex">
     <button
       ref="trigger"
-      class="btn bg-white border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-600"
+      class="btn rounded-none bg-white border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-600"
       aria-haspopup="true"
       @click.prevent="dropdownOpen = !dropdownOpen"
       :aria-expanded="dropdownOpen"
@@ -20,7 +20,7 @@
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-show="dropdownOpen" class="origin-top-right z-10 absolute top-full min-w-72 bg-white border border-slate-200 pt-1.5 rounded shadow-lg overflow-hidden mt-1" :class="align === 'right' ? 'right-0' : 'left-0'">
+      <div v-show="dropdownOpen" class="origin-top-right z-10 absolute top-full min-w-72 bg-white border border-slate-200 pt-1.5 shadow-lg overflow-hidden mt-1" :class="align === 'right' ? 'right-0' : 'left-0'">
         <div ref="dropdown">
           <div class="text-xs font-semibold text-slate-400 uppercase pt-1.5 pb-2 px-4">Filters</div>
           <div class="md:flex space-y-4 md:space-y-0 md:space-x-4">
@@ -112,10 +112,10 @@
           <div class="py-2 px-3 border-t border-slate-200 bg-slate-50">
             <ul class="flex items-center justify-between">
               <li>
-                <button class="btn-xs bg-white border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-600" @click="clean">Clear</button>
+                <button class="btn-xs bg-white border-slate-200 hover:border-slate-300 rounded-none text-slate-500 hover:text-slate-600" @click="clean">Clear</button>
               </li>
               <li>
-                <button class="btn-xs bg-indigo-500 hover:bg-indigo-600 text-white" @click="apply" @focusout="dropdownOpen = false">Apply</button>
+                <button class="btn-xs bg-indigo-500 hover:bg-indigo-600 text-white rounded-none" @click="apply" @focusout="dropdownOpen = false">Apply</button>
               </li>
             </ul>
           </div>

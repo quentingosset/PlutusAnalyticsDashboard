@@ -16,18 +16,6 @@
           </button>
 
         </div>
-        <div>
-          <div class="px-4 py-2 rounded-sm text-sm border bg-emerald-100 border-emerald-200 text-emerald-600">
-            <div class="flex w-full justify-between items-start">
-              <div class="flex">
-                <svg class="w-4 h-4 shrink-0 fill-current opacity-80 mt-[3px] mr-3" viewBox="0 0 16 16">
-                  <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm1 12H7V7h2v5zM8 6c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1z"></path>
-                </svg>
-                <div class="font-medium"> Announcement: Plutus Analytics v1.0.0 Dashboard is out. <router-link to="/changelog" custom v-slot="{ href, navigate, isExactActive }"><a class="text-indigo-500 hover:text-indigo-600" :href="href" @click="navigate">Read more...</a></router-link> </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
 
         <!-- Header: Right side -->
@@ -69,7 +57,7 @@ export default {
     getgit("quentingosset", "PlutusAnalyticsDashboard", "version.json").then(value => {
       if(process.env.PACKAGE_VERSION !== value.version){
         versionStatus.value = false;
-        versionText.value = `<div class="inline-flex font-medium text-center px-2.5 py-0.5 bg-red-100 text-red-600">New version available (${value.version})</div>`;
+        versionText.value = `<div class="inline-flex font-medium text-center px-2.5 py-0.5 bg-red-100 text-red-600">New version available (${process.env.PACKAGE_VERSION})</div>`;
       }else{
         versionText.value = `V${value.version}`;
       }

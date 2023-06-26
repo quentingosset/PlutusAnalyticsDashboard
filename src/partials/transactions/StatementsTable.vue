@@ -9,7 +9,7 @@
     <Datepicker v-model:date-start="dateStart" v-model:date-end="dateEnd" @refreshFilter="refreshFilter"/>
   </div>
 
-  <div class="bg-white shadow-lg rounded-sm border border-slate-200 relative">
+  <div class="bg-white shadow-lg border border-slate-200 relative">
     <header class="px-5 py-4">
       <div class="flex items-center justify-between">
         <h2 class="font-semibold text-slate-600">All Transactions: <span class="text-slate-800 font-bold">{{ statementsSorted.length }}</span></h2>
@@ -114,6 +114,7 @@ import DropdownFilter from "../../components/DropdownFilter.vue";
 import DropdownDownload from "../../components/DropdownDownload.vue";
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
+import {formatCurrency} from "../../utils/Utils";
 
 dayjs.extend(isBetween);
 export default {
@@ -183,20 +184,9 @@ export default {
     //this.sortedItems.set(this.defaultSortedItem.dataset.sorted, this.defaultSortedItem);
   },
   methods:{
+    formatCurrency,
     sortTransactions(value){
       this.sortedItems = value;
-    },
-    formatCurrency(value) {
-      if (isNaN(value)) {
-        return '';
-      }
-
-      var formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: localStorage.getItem('local_currency'),
-        minimumFractionDigits: 2
-      });
-      return formatter.format(value);
     },
     refreshFilter(value){
       if(value.length === 1){

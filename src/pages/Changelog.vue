@@ -120,6 +120,7 @@
 import {ref} from 'vue'
 import Sidebar from '../partials/Sidebar.vue'
 import Header from '../partials/Header.vue'
+import {globalStore} from "../stores/global";
 
 export default {
   name: 'Changelog',
@@ -130,9 +131,11 @@ export default {
   setup() {
 
     const sidebarOpen = ref(false)
+    const storeGlobal = globalStore();
 
     return {
       sidebarOpen,
+      storeGlobal
     }
   },
   mounted() {

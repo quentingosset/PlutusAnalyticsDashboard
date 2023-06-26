@@ -19,6 +19,7 @@
 }
 
 .flatpickr-calendar {
+    border-radius:0 !important;
     border: inherit;
     @apply rounded shadow-lg border border-slate-200 left-1/2;
     margin-left: calc(calc(var(--daysWidth) + calc(var(--calendarPadding)*2))*0.5*-1);

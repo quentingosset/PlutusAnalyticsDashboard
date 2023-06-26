@@ -64,11 +64,26 @@
                 <a class="block text-slate-200 hover:text-white truncate transition duration-150" :class="isExactActive && 'hover:text-slate-200'" :href="href" @click="navigate">
                   <div class="flex items-center justify-between">
                     <div class="grow flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 h-6 w-6" viewBox="0 0 512 512">
-                        <path class="fill-current text-slate-400" :class="isExactActive && 'text-indigo-500'" d="M436 512H76c16.569 0 30-13.431 30-30 0-11.046 8.954-20 20-20h320c11.046 0 20 8.954 20 20 0 16.569-13.431 30-30 30z" fill="#000000" data-original="#000000"></path>
-                        <path class="fill-current text-slate-400" :class="isExactActive && 'text-indigo-500'" d="M405.302 14.815C400.788 17.778 395.371 20 387.245 20c-24.378 0-24.378-20-48.755-20-24.374 0-24.374 20-48.748 20-24.375 0-24.375-20-48.75-20-24.374 0-24.374 20-48.748 20-24.373 0-24.373-20-48.747-20-24.375 0-24.375 20-48.75 20-8.125 0-13.541-2.222-18.055-5.185C63.52 6.167 46 15.984 46 31.741v434.277c0 9.096 7.6 16.418 16.796 15.962 7.015-.348 13-5.419 14.722-12.228C82.994 448.083 102.654 432 126 432h290c11.046 0 20-8.954 20-20V31.745c0-15.76-17.522-25.578-30.698-16.93zM271 321c0 11.046-8.954 20-20 20H131c-11.046 0-20-8.954-20-20s8.954-20 20-20h120c11.046 0 20 8.954 20 20zm80-70H131c-11.046 0-20-8.954-20-20s8.954-20 20-20h220c11.046 0 20 8.954 20 20s-8.954 20-20 20zm0-90H131c-11.046 0-20-8.954-20-20s8.954-20 20-20h220c11.046 0 20 8.954 20 20s-8.954 20-20 20z" fill="#000000" data-original="#000000" ></path>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 h-6 w-6" viewBox="0 0 384 512">
+                        <path class="fill-current text-slate-400" :class="isExactActive && 'text-white'" d="M14 2.2c8.5-3.9 18.5-2.5 25.6 3.6L80 40.4l40.4-34.6c9-7.7 22.3-7.7 31.2 0L192 40.4l40.4-34.6c9-7.7 22.3-7.7 31.2 0L304 40.4l40.4-34.6c7.1-6.1 17.1-7.5 25.6-3.6s14 12.4 14 21.8v464c0 9.4-5.5 17.9-14 21.8s-18.5 2.5-25.6-3.6L304 471.6l-40.4 34.6c-9 7.7-22.3 7.7-31.2 0L192 471.6l-40.4 34.6c-9 7.7-22.3 7.7-31.2 0L80 471.6l-40.4 34.6c-7.1 6.1-17.1 7.5-25.6 3.6S0 497.4 0 488V24C0 14.6 5.5 6.1 14 2.2zM96 144c-8.8 0-16 7.2-16 16s7.2 16 16 16h192c8.8 0 16-7.2 16-16s-7.2-16-16-16H96zM80 352c0 8.8 7.2 16 16 16h192c8.8 0 16-7.2 16-16s-7.2-16-16-16H96c-8.8 0-16 7.2-16 16zm16-112c-8.8 0-16 7.2-16 16s7.2 16 16 16h192c8.8 0 16-7.2 16-16s-7.2-16-16-16H96z"></path>
                       </svg>
-                      <span class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Transactions</span>
+                      <span class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200" :class="isExactActive && 'text-white'">Transactions</span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </router-link>
+            <router-link to="/perks" custom v-slot="{ href, navigate, isExactActive }">
+              <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0" :class="isExactActive && 'bg-slate-900'">
+                <a class="block text-slate-200 hover:text-white truncate transition duration-150" :class="isExactActive && 'hover:text-slate-200'" :href="href" @click="navigate">
+                  <div class="flex items-center justify-between">
+                    <div class="grow flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 h-6 w-6" viewBox="0 0 512 512">
+                        <g fill="currentColor">
+                          <path class="fill-current text-slate-400" :class="isExactActive && 'text-white'" d="M190.5 68.8l34.8 59.2H152c-22.1 0-40-17.9-40-40s17.9-40 40-40h2.2c14.9 0 28.8 7.9 36.3 20.8zM64 88c0 14.4 3.5 28 9.6 40H32c-17.7 0-32 14.3-32 32v64c0 17.7 14.3 32 32 32h448c17.7 0 32-14.3 32-32v-64c0-17.7-14.3-32-32-32h-41.6c6.1-12 9.6-25.6 9.6-40 0-48.6-39.4-88-88-88h-2.2c-31.9 0-61.5 16.9-77.7 44.4L256 85.5l-24.1-41C215.7 16.9 186.1 0 154.2 0H152c-48.6 0-88 39.4-88 88zm336 0c0 22.1-17.9 40-40 40h-73.3l34.8-59.2c7.6-12.9 21.4-20.8 36.3-20.8h2.2c22.1 0 40 17.9 40 40zM32 288v176c0 26.5 21.5 48 48 48h144V288H32zm256 224h144c26.5 0 48-21.5 48-48V288H288v224z"></path>
+                        </g>
+                      </svg>
+                      <span class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200" :class="isExactActive && 'text-white'">Perks</span>
                     </div>
                   </div>
                 </a>
@@ -79,11 +94,10 @@
                 <a class="block text-slate-200 hover:text-white truncate transition duration-150" :class="isExactActive && 'hover:text-slate-200'" :href="href" @click="navigate">
                   <div class="flex items-center justify-between">
                     <div class="grow flex items-center">
-                      <svg class="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-                        <path class="fill-current text-slate-600" d="M20 7a.75.75 0 01-.75-.75 1.5 1.5 0 00-1.5-1.5.75.75 0 110-1.5 1.5 1.5 0 001.5-1.5.75.75 0 111.5 0 1.5 1.5 0 001.5 1.5.75.75 0 110 1.5 1.5 1.5 0 00-1.5 1.5A.75.75 0 0120 7zM4 23a.75.75 0 01-.75-.75 1.5 1.5 0 00-1.5-1.5.75.75 0 110-1.5 1.5 1.5 0 001.5-1.5.75.75 0 111.5 0 1.5 1.5 0 001.5 1.5.75.75 0 110 1.5 1.5 1.5 0 00-1.5 1.5A.75.75 0 014 23z"></path>
-                        <path class="fill-current text-slate-400" :class="isExactActive && 'text-indigo-500'" d="M17 23a1 1 0 01-1-1 4 4 0 00-4-4 1 1 0 010-2 4 4 0 004-4 1 1 0 012 0 4 4 0 004 4 1 1 0 010 2 4 4 0 00-4 4 1 1 0 01-1 1zM7 13a1 1 0 01-1-1 4 4 0 00-4-4 1 1 0 110-2 4 4 0 004-4 1 1 0 112 0 4 4 0 004 4 1 1 0 010 2 4 4 0 00-4 4 1 1 0 01-1 1z"></path>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 h-6 w-6" viewBox="0 0 448 512">
+                        <path class="fill-current text-slate-400" :class="isExactActive && 'text-white'" d="M224 0c-17.7 0-32 14.3-32 32v19.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416h384c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3c-31.2-35.2-48.5-80.5-48.5-127.6V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H160c0 17 6.7 33.3 18.7 45.3S207 512 224 512s33.3-6.7 45.3-18.7z"></path>
                       </svg>
-                      <span class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Changelog</span>
+                      <span class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200" :class="isExactActive && 'text-white'">Changelog</span>
                     </div>
                   </div>
                 </a>
