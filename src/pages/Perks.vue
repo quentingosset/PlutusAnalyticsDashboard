@@ -35,9 +35,9 @@
                 </ul>
               </div>
               <div class="mb-4 sm:mb-0">
-                <div v-if="activetab === 'currentMonth'" class="inline-flex text-center px-2.5 py-0.5 bg-amber-500 text-white mr-3" >
+                <div v-if="activetab === 'currentMonth' && (storePerk.perksGranted - storePerk.perks?.length)" class="inline-flex text-center px-2.5 py-0.5 bg-amber-500 text-white mr-3" >
                   <div class="flex items-center justify-between">
-                    <div v-show="(storePerk.perksGranted - storePerk.perks?.length)" class="uppercase">You have
+                    <div class="uppercase">You have
                       <span v-text='(storePerk.perksGranted - storePerk.perks?.length)'></span>
                       more
                       <span v-show='(storePerk.perksGranted - storePerk.perks?.length) > 1'> perks</span>
@@ -45,9 +45,9 @@
                     </div>
                   </div>
                 </div>
-                <div v-if="activetab === 'nextMonth'" class="inline-flex text-center px-2.5 py-0.5 bg-amber-500 text-white mr-3" >
+                <div v-if="activetab === 'nextMonth' && (storePerk.perksGranted - storePerk.perksNextMonth?.length)" class="inline-flex text-center px-2.5 py-0.5 bg-amber-500 text-white mr-3" >
                   <div class="flex items-center justify-between">
-                    <div v-show="(storePerk.perksGranted - storePerk.perksNextMonth?.length)" class="uppercase">You have
+                    <div class="uppercase">You have
                       <span v-text='(storePerk.perksGranted - storePerk.perksNextMonth?.length)'></span>
                       more
                       <span v-show='(storePerk.perksGranted - storePerk.perksNextMonth?.length) > 1'> perks</span>

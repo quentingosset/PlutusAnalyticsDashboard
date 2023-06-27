@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-full sm:col-span-6 xl:col-span-3 bg-white shadow-lg border border-slate-200">
+  <div :class="!item.available? 'opacity-50' : ''" class="col-span-full sm:col-span-6 xl:col-span-3 bg-white shadow-lg border border-slate-200">
     <div class="flex flex-col h-full">
       <!-- Card top -->
       <div class="grow p-5">
