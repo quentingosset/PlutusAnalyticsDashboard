@@ -46,7 +46,7 @@
                   </li>
                   <li class="py-1 px-3">
                       <label class="flex items-center">
-                          <input type="checkbox" class="form-checkbox" data-sort="validation" checked/>
+                          <input type="checkbox" class="form-checkbox" data-sort="in_validation" checked/>
                           <span class="text-sm font-medium ml-2 w-28">In Validation</span>
                       </label>
                   </li>
@@ -109,15 +109,13 @@
                   </ul>
               </div>
           </div>
-          <div class="py-2 px-3 border-t border-slate-200 bg-slate-50">
-            <ul class="flex items-center justify-between">
-              <li>
-                <button class="btn-xs bg-white border-slate-200 hover:border-slate-300 rounded-none text-slate-500 hover:text-slate-600" @click="clean">Clear</button>
-              </li>
-              <li>
-                <button class="btn-xs bg-indigo-500 hover:bg-indigo-600 text-white rounded-none" @click="apply" @focusout="dropdownOpen = false">Apply</button>
-              </li>
-            </ul>
+          <div class="sm:flex sm:justify-between sm:items-center  py-2 px-3 border-t border-slate-200 bg-slate-50">
+            <div class="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
+              <button class="btn-xs bg-white border-slate-200 hover:border-slate-300 rounded-none text-slate-500 hover:text-slate-600" @click="clean">Clear</button>
+              <button class="btn-xs bg-white border-slate-200 hover:border-slate-300 rounded-none text-slate-500 hover:text-slate-600" @click="all">Select all</button>
+            </div>
+
+            <button class="btn-xs bg-indigo-500 hover:bg-indigo-600 text-white rounded-none" @click="apply" @focusout="dropdownOpen = false">Apply</button>
           </div>
         </div>
       </div>
@@ -185,6 +183,12 @@ export default {
       checked.forEach(value => value.checked = false);
     };
 
+    const all = () => {
+      const checked = dropdownFilter.value.querySelectorAll('input[type=checkbox]');
+      //tempChecked.value = checked;
+      checked.forEach(value => value.checked = true);
+    };
+
     const apply = () => {
       let checked = dropdownFilter.value.querySelectorAll('input[type=checkbox]:checked');
       checked = new Set([...checked].map(formatValue => formatValue.dataset.sort));
@@ -199,6 +203,7 @@ export default {
         trigger,
         dropdown,
         clean,
+        all,
         apply
     }
   }
