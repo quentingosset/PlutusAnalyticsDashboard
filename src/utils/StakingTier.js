@@ -1,5 +1,5 @@
 export class StakingTier {
-    static FREE = new StakingTier(0,"Free", 0,3);
+    static FREE = new StakingTier(0,"Free", 3,1);
     static HERO = new StakingTier(1,"Hero", 4,4);
     static VETERAN = new StakingTier(2,"Veteran", 5,5);
     static LEGEND = new StakingTier(3,"Legend", 6,6);
