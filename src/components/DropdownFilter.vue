@@ -74,7 +74,7 @@
                   </li>
                 <li class="py-1 px-3">
                   <label class="flex items-center">
-                    <input type="checkbox" class="form-checkbox" data-sort="refund" checked/>
+                    <input type="checkbox" class="form-checkbox" data-sort="refunded" checked/>
                     <span class="text-sm font-medium ml-2 w-20">Refunded</span>
                   </label>
                 </li>
