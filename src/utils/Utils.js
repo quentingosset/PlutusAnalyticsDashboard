@@ -39,11 +39,10 @@ export const hexToRGB = (h) => {
   return `${+r},${+g},${+b}`;
 };
 
-export const formatValue = (value) => Intl.NumberFormat('en-US', {
+export const formatValue = (value) => new Intl.NumberFormat('en-US', {
   style: 'currency',
-  currency: 'USD',
-  maximumSignificantDigits: 3,
-  notation: 'compact',
+  currency: localStorage.getItem('local_currency'),
+  minimumFractionDigits: 2
 }).format(value);
 
 export const formatThousands = (value) => Intl.NumberFormat('en-US', {

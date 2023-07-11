@@ -139,7 +139,7 @@ export default {
     }
   },
   mounted() {
-    console.log("mount");
+
   }
 }
 </script>

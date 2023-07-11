@@ -16,7 +16,13 @@ export default defineConfig({
     },
   },
   plugins: [
-      vue(),
+      vue({
+          template: {
+              compilerOptions: {
+                  isCustomElement: (tag) => ['debug'].includes(tag),
+              }
+          }
+      }),
       copy({
         targets: [
             { src: 'dist/*', dest: 'extensions/extension_chrome/', overwrite: true },

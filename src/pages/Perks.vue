@@ -88,6 +88,7 @@
                       v-for="perk in storePerk.nextMonthPerks"
                       :key="perk.id"
                       :item="perk"
+                      :nextMonth="true"
                   />
                 </div>
               </div>
@@ -142,7 +143,7 @@ export default {
   },
   methods: {
     timeLeft() {
-      return dayjs().endOf('month').subtract(1, 'day').diff(dayjs(), 'day')
+      return dayjs().endOf('month').diff(dayjs(), 'day')
     }
   }
 }

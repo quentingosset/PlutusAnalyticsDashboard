@@ -1,17 +1,14 @@
 import {defineStore} from 'pinia'
 import {getSubscription} from "../utils/PlutusCall";
+import {statementStore} from "./statement";
 import {SubscriptionType} from "../utils/SubscriptionType";
 import {LimitType} from "../utils/LimitType";
-import {limitStore} from "./limit";
 
-const storeLimit = limitStore();
-export const subscriptionStore = defineStore({
-    id: 'subscription',
+const storeStatement = statementStore();
+export const limitStore = defineStore({
+    id: 'limit',
     state: () => ({
-        subscriptionPlan: null,
-        subscriptionDesired: null,
-        subscriptionEnd: null,
-        cashbackLimit: null,
+        limitType: null,
         loading: false,
         error: null
     }),
@@ -25,7 +22,7 @@ export const subscriptionStore = defineStore({
                 this.subscriptionPlan = SubscriptionType.init(subscriptionPlan)
                 this.subscriptionDesired = SubscriptionType.init(subscriptionDesired);
                 this.subscriptionEnd = subscriptionEnd;
-                storeLimit.limitType = LimitType.init(subscriptionPlan);
+                this.limitType = LimitType.init(subscriptionPlan);
                 this.cashbackLimit = this.subscriptionPlan.maxExpense*(this.subscriptionPlan.percent/100);
             } catch (error) {
                 this.error = error

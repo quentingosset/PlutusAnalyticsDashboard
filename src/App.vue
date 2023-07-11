@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import './charts/ChartjsConfig';
 
 export default {
   setup() {

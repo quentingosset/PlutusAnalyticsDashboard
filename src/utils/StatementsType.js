@@ -5,6 +5,7 @@ import ImageShop from "../images/icon-SHOP.svg";
 import ImageGift from "../images/icon-GIFT.svg";
 import ImageWithdrawFee from "../images/icon-WITHDRAW_FEE.svg";
 import ImageWithdrawAccount from "../images/icon-WITHDRAW_ACCOUNT.svg";
+import _ from "lodash";
 
 export class StatementsType {
     static TOP_UP_ACCOUNT = new StatementsType("TOP_UP_ACCOUNT",["DEPOSIT_FUNDS_RECEIVED"],ImageDepositFundsReceived);
@@ -28,9 +29,13 @@ export class StatementsType {
         this._name = name;
     }
 
-    is (StatementToCheck) {
-        return this._statementType.includes(StatementToCheck);
+    is (statementToCheck) {
+        return this._statementType.some(item => statementToCheck.includes(item));
     };
+
+    equals (other) {
+        return _.isEqual(this,other);
+    }
 
     get name() {
         return this._name;
@@ -43,4 +48,5 @@ export class StatementsType {
     get icon() {
         return this._icon;
     }
+
 }

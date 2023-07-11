@@ -280,43 +280,42 @@ const initStatus = (value) => {
     value.reward = {};
     value.reward.tooltip = {};
     value.sortedKeyword = new Set();
-
-    if (StatementsType.TOP_UP_ACCOUNT.is(value.type)) {
+    if (StatementsType.TOP_UP_ACCOUNT.is([value.type])) {
         value.type = StatementsType.TOP_UP_ACCOUNT;
         value.sortedKeyword.add('top_up_account');
         value.status.value = 'top_up_account';
         value.status.text = 'Top up Account';
         value.status.style = 'bg-slate-100 text-slate-600';
         value.description = "Plutus - Load Plutus account";
-    } else if (StatementsType.WITHDRAW_ACCOUNT_TO_CARD.is(value.type)) {
+    } else if (StatementsType.WITHDRAW_ACCOUNT_TO_CARD.is([value.type])) {
         value.type = StatementsType.WITHDRAW_ACCOUNT_TO_CARD;
         value.sortedKeyword.add('unload_account');
         value.status.value = 'unload_account';
         value.status.text = 'Unload Account';
         value.status.style = 'bg-slate-100 text-slate-600'
         value.description = "Plutus - Unload Plutus account";
-    } else if (StatementsType.TOP_UP_CARD.is(value.type)) {
+    } else if (StatementsType.TOP_UP_CARD.is([value.type])) {
         value.type = StatementsType.TOP_UP_CARD;
         value.sortedKeyword.add('top_up_card');
         value.status.value = 'top_up';
         value.status.text = 'Top up Card';
         value.status.style = 'bg-slate-100 text-slate-600';
         value.description = "Plutus - Load a card with deposit";
-    } else if (StatementsType.DEX_BUY.is(value.type)) {
+    } else if (StatementsType.DEX_BUY.is([value.type])) {
         value.type = StatementsType.DEX_BUY;
         value.sortedKeyword.add('dex_buy');
         value.status.value = 'dex_buy';
         value.status.text = 'Dex Buy';
         value.status.style = 'bg-rose-100 text-rose-600';
         value.description = 'Plutus - Dex buy';
-    } else if (StatementsType.WITHDRAW_FEE.is(value.type)) {
+    } else if (StatementsType.WITHDRAW_FEE.is([value.type])) {
         value.type = StatementsType.WITHDRAW_FEE;
         value.sortedKeyword.add('withdraw_fee');
         value.status.value = 'withdraw_fee';
         value.status.text = 'Withdraw Fee';
         value.status.style = 'bg-rose-100 text-rose-600';
         value.description = "Plutus - PLU Withdraw fee";
-    } else if (StatementsType.BONUS.is(value.type)) {
+    } else if (StatementsType.BONUS.is([value.type])) {
         value.type = StatementsType.BONUS;
         value.sortedKeyword.add('bonus');
         value.status.value = 'bonus';
@@ -328,13 +327,13 @@ const initStatus = (value) => {
         value.reason.value = find ? find.reason : "-";
         value.status.tooltip.text = `Reason : ${value.reason.value}`;
         value.description = "Complimentary gift";
-    } else if (StatementsType.DECLINED.is(value.type)) {
+    } else if (StatementsType.DECLINED.is([value.type])) {
         value.type = StatementsType.DECLINED;
         value.sortedKeyword.add('declined');
         value.status.value = 'declined';
         value.status.text = 'Declined';
         value.status.style = 'bg-rose-100 text-rose-600';
-    } else if (StatementsType.IN_VALIDATION.is(value.type) && value.cashback.length === 0) {
+    } else if (StatementsType.IN_VALIDATION.is([value.type]) && value.cashback.length === 0) {
         value.type = StatementsType.IN_VALIDATION;
         value.sortedKeyword.add('in_validation');
         value.status.value = 'validation';
@@ -374,7 +373,7 @@ const initStatus = (value) => {
         value.status.style = 'bg-emerald-100 text-emerald-600';
         value.sortedKeyword.add('rewarded');
         value.sortedKeyword.add('completed');
-    } else if (StatementsType.REFUNDED.is(value.type)) {
+    } else if (StatementsType.REFUNDED.is([value.type])) {
         value.type = StatementsType.REFUNDED;
         value.status.value = 'refunded';
         value.status.text = 'Refunded';

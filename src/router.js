@@ -4,7 +4,8 @@ const routerHistory = createWebHashHistory()
 const Changelog = () => import('./pages/Changelog.vue')
 const Statements = () => import('./pages/Statements.vue')
 const Perks = () => import('./pages/Perks.vue')
-export const router = createRouter({
+const Limits = () => import('./pages/Limits.vue')
+const router = createRouter({
   history: routerHistory,
   routes: [
     {
@@ -14,6 +15,10 @@ export const router = createRouter({
     {
       path: '/perks',
       component: Perks
+    },
+    {
+      path: '/limits',
+      component: Limits
     },
     {
       path: '/changelog',

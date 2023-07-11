@@ -141,7 +141,6 @@ export default {
     const cashbackAverage = ref(0);
     const statements = computed(() => props.statements);
     const statementsSorted = ref([]);
-    console.log(dateStart,dateEnd);
     statementsSorted.value = statements.value.filter((value) => dayjs(value.date).isBetween(dateStart.value,dateEnd.value,null, '[]'));
     const checkAll = () => {
       selected.value = []

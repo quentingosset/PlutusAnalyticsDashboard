@@ -59,7 +59,7 @@
               <span>Active</span>
             </div>
           </div>
-          <div class="block flex-1 text-center text-sm text-slate-600 hover:text-slate-800 font-medium px-3 py-4 group">
+          <div v-show="!nextMonth" class="block flex-1 text-center text-sm text-slate-600 hover:text-slate-800 font-medium px-3 py-4 group">
             <div class="flex items-center justify-center">
               <span :class="item.percent_spent === 100? 'text-slate-600' : item.percent_spent === 0? 'text-rose-500' : 'text-amber-500'">{{ formatCurrency(Math.min(item.spent??0,item.max_mothly_fiat_reward)) }} / {{ formatCurrency(item.max_mothly_fiat_reward) }}</span>
             </div>
@@ -90,7 +90,7 @@ import {ref} from "vue";
 export default {
   name: 'PerkCard',
   methods: {formatCurrency},
-  props: ['item'],
+  props: ['item','nextMonth'],
   components: {
     ModalBasic
   },

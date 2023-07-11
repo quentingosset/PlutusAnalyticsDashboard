@@ -1,6 +1,7 @@
 <template>
   <!-- Row -->
-  <tr v-show="!hidden" :class="{ fadeOut: showFadeOutClass, fadeIn: showFadeInClass }" class="tx" :id="`${transaction.id}`" :data-debug="`${JSON.stringify(transaction)}`">
+  <tr v-show="!hidden" :class="{ fadeOut: showFadeOutClass, fadeIn: showFadeInClass }" class="tx" :id="`${transaction.id}`">
+    <debug v-show="false" v-text="debug"></debug>
     <!--<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
       <div class="flex items-center">
         <label class="inline-flex">
@@ -210,6 +211,7 @@ export default {name: 'StatementsTableItem', components: {
     const showFadeInClass = ref(true);
     const sortedKeyword = ref(props.statement.sortedKeyword);
     const descriptionOpen = ref(false)
+    const debug = statement.value;
 
     const amountColor = () => {
       switch (toRaw(statement.value.type)) {
@@ -254,9 +256,11 @@ export default {name: 'StatementsTableItem', components: {
       showFadeInClass,
       sortedItems,
       sortedKeyword,
-      transaction: statement
+      transaction: statement,
+      debug
     }
   }, methods: {
+    toRaw,
     formatDate(dateString) {
       const date = dayjs(dateString);
       // Then specify how you want your dates to be formatted

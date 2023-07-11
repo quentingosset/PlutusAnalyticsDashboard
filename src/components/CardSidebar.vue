@@ -169,21 +169,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Payment Limits -->
-              <div class="mt-6">
-                <div class="text-sm font-semibold text-slate-800 mb-4">Rolling Limits</div>
-                <div class="pb-4 border-b border-slate-200">
-                  <div class="flex justify-between text-sm mb-2">
-                    <div>Monthly spent</div>
-                    <div v-show="loading" class="animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
-                    <div v-show="!loading" class="italic"> {{ formatCurrency(storeStatement.monthlySpend) }} <span class="text-slate-400">/</span> {{ formatCurrency(0) }}</div>
-                  </div>
-                  <div v-show="loading" class="relative w-full h-2 animate-pulse h-3 w-32 bg-slate-200 rounded"></div>
-                  <div v-show="!loading" class="relative w-full h-2 bg-slate-300">
-                    <div class="absolute inset-0 bg-emerald-500" aria-hidden="true" :style="spendingMonthlyLimitPercent(0,0)"></div>
-                  </div>
-                </div>
-              </div>
 
               <!-- Edit / Delete -->
               <!--<div class="flex items-center space-x-3 mt-6">
