@@ -32,7 +32,7 @@ export default {
       config: {
         mode: 'range',
         static: true,
-        monthSelectorType: 'static',
+        monthSelectorType: 'dropdown',
         dateFormat: 'M j, Y',
         defaultDate: [dateStart.value.format('MMM DD, YYYY'),dateEnd.value.format('MMM DD, YYYY')],
         prevArrow: '<svg class="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
