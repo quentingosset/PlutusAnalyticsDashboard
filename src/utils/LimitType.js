@@ -2,20 +2,13 @@ import {Frequency} from "./Frenquency";
 
 export class LimitType {
     // TODO TOUT MODIFIER ICI POUR GERER LES LIMITE : https://plutus.it/fees
-    static DAILY_SPEND_STARTER = new LimitType('DAILY_SPEND',Frequency.DAILY,2300);
-    static WEEKLY_SPEND_STARTER = new LimitType('WEEKLY_SPEND',Frequency.WEEKLY,2500);
-    static MONTHLY_SPEND_STARTER = new LimitType('MONTHLY_SPEND',Frequency.MONTHLY,4000);
-    static YEARLY_SPEND_STARTER = new LimitType('YEARLY_SPEND',Frequency.YEARLY,50000);
+    static DAILY_SPEND = new LimitType('DAILY_SPEND',Frequency.DAILY,500000);
+    static MONTHLY_SPEND = new LimitType('MONTHLY_SPEND',Frequency.MONTHLY,1000000);
+    static YEARLY_SPEND = new LimitType('YEARLY_SPEND',Frequency.YEARLY,12000000);
 
-    static DAILY_SPEND_EVERYDAY = new LimitType('DAILY_SPEND',Frequency.DAILY,5200);
-    static WEEKLY_SPEND_EVERYDAY = new LimitType('WEEKLY_SPEND',Frequency.WEEKLY,9100);
-    static MONTHLY_SPEND_EVERYDAY = new LimitType('MONTHLY_SPEND',Frequency.MONTHLY,14000);
-    static YEARLY_SPEND_EVERYDAY = new LimitType('YEARLY_SPEND',Frequency.YEARLY,100000);
-
-    static DAILY_SPEND_PREMIUM = new LimitType('DAILY_SPEND',Frequency.DAILY,7200);
-    static WEEKLY_SPEND_PREMIUM = new LimitType('WEEKLY_SPEND',Frequency.WEEKLY,14100);
-    static MONTHLY_SPEND_PREMIUM = new LimitType('MONTHLY_SPEND',Frequency.MONTHLY,20000);
-    static YEARLY_SPEND_PREMIUM = new LimitType('YEARLY_SPEND',Frequency.YEARLY,100000);
+    static YEARLY_CASHBACK_STARTER = new LimitType('YEARLY_CASHBACK',Frequency.YEARLY_CASHBACK,3000);
+    static YEARLY_CASHBACK_EVERYDAY = new LimitType('YEARLY_CASHBACK',Frequency.YEARLY_CASHBACK,24000);
+    static YEARLY_CASHBACK_PREMIUM = new LimitType('YEARLY_CASHBACK',Frequency.YEARLY_CASHBACK,100000);
 
     constructor(name,frequency,limit) {
         this._name = name;
@@ -24,12 +17,16 @@ export class LimitType {
     }
 
     static init(subscriptionType) {
+        let limit = [this.DAILY_SPEND,this.MONTHLY_SPEND,this.YEARLY_SPEND];
         if(subscriptionType === "starter"){
-            return [this.DAILY_SPEND_STARTER,this.WEEKLY_SPEND_STARTER,this.MONTHLY_SPEND_STARTER,this.YEARLY_SPEND_STARTER];
+            limit.push(this.YEARLY_CASHBACK_STARTER);
+            return limit;
         } else if (subscriptionType === "everyday") {
-            return [this.DAILY_SPEND_EVERYDAY,this.WEEKLY_SPEND_EVERYDAY,this.MONTHLY_SPEND_EVERYDAY,this.YEARLY_SPEND_EVERYDAY];
+            limit.push(this.YEARLY_CASHBACK_EVERYDAY);
+            return limit;
         } else if (subscriptionType === "premium") {
-            return [this.DAILY_SPEND_PREMIUM,this.WEEKLY_SPEND_PREMIUM,this.MONTHLY_SPEND_PREMIUM,this.YEARLY_SPEND_PREMIUM];
+            limit.push(this.YEARLY_CASHBACK_PREMIUM);
+            return limit;
         }
     }
 

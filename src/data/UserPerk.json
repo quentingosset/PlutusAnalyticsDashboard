@@ -1,0 +1,103 @@
+{
+  "perks": [
+    {
+      "id": 1,
+      "label": "Netflix",
+      "category": "entertainment",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/netflix.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10",
+      "spent": 10,
+      "percent_spent": 100
+    },
+    {
+      "id": 2,
+      "label": "Spotify",
+      "category": "entertainment",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/spotify.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10",
+      "spent": 10,
+      "percent_spent": 100
+    },
+    {
+      "id": 830246,
+      "label": "Curve",
+      "category": "travel",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/curve.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10",
+      "spent": 10,
+      "percent_spent": 100
+    },
+    {
+      "id": 308119,
+      "label": "Xbox Games Store",
+      "category": "gaming",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/WMdhq9b5.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10",
+      "spent": 10,
+      "percent_spent": 100
+    },
+    {
+      "id": 502486,
+      "label": "Carrefour",
+      "category": "supermarkets",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/jZf7FPVX.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10",
+      "spent": 10,
+      "percent_spent": 100
+    },
+    {
+      "id": 12,
+      "label": "Starbucks",
+      "category": "delivery",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/starbucks.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10",
+      "spent": 0,
+      "percent_spent": 0
+    }
+  ],
+  "next_month_perks": [
+    {
+      "id": 1,
+      "label": "Netflix",
+      "category": "entertainment",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/netflix.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10"
+    },
+    {
+      "id": 2,
+      "label": "Spotify",
+      "category": "entertainment",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/spotify.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10"
+    },
+    {
+      "id": 308119,
+      "label": "Xbox Games Store",
+      "category": "gaming",
+      "image_url": "https://storage.googleapis.com/plutus-perks-logos/WMdhq9b5.png",
+      "description": "Up to €10 in PLU / month",
+      "available": true,
+      "max_mothly_fiat_reward": "10"
+    }
+  ],
+  "total_perks_granted": 8,
+  "available": 2,
+  "allow_update": false,
+  "staking_level": 4
+}

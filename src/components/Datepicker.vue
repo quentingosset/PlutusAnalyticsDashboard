@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" :class="$style.container">
     <flat-pickr class="form-input pl-9 text-slate-500 rounded-none hover:text-slate-600 font-medium focus:border-slate-300" :config="config" v-model="date" placeholder="Select a date"></flat-pickr>
     <div class="absolute inset-0 right-auto flex items-center pointer-events-none">
       <svg class="w-4 h-4 fill-current text-slate-500 ml-3" viewBox="0 0 16 16">
@@ -8,7 +8,16 @@
     </div>
   </div>
 </template>
+<style lang="scss" module>
+.container :global {
 
+  .flatpickr-current-month{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+</style>
 <script>
 import flatPickr from 'vue-flatpickr-component'
 import dayjs from 'dayjs';
@@ -40,7 +49,9 @@ export default {
         onReady: (selectedDates, dateStr, instance) => {
           instance.element.value = dateStr.replace('to', '-');
           const customClass = (props.align) ? props.align : '';
-          instance.calendarContainer.classList.add(`flatpickr-${customClass}`);
+          instance.calendarContainer.classList.add(`flatpickr-${customClass}`)
+          instance.monthsDropdownContainer.classList.remove(...instance.monthsDropdownContainer.classList);
+          instance.monthsDropdownContainer.classList.add(`form-select`);
         },
         onChange: function(selectedDates, dateStr, instance) {
           instance.element.value = dateStr.replace('to', '-');

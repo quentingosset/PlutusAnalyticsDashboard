@@ -11,7 +11,7 @@
           <div class="py-8 px-4 lg:px-8">
             <div class="max-w-sm mx-auto lg:max-w-none">
 
-              <div class="text-slate-800 font-semibold text-center mb-6">Physical Plutus Card Summary</div>
+              <div class="text-slate-800 font-semibold text-center mb-6 text-lowercase">{{storeCard.cardType}} Plutus Card Summary</div>
 
               <!-- Credit Card -->
               <div class="relative aspect-[7/4] bg-gradient-to-tr from-slate-600 to-slate-800 p-5 rounded-xl shadow-lg overflow-hidden">
@@ -131,7 +131,7 @@
                   <li class="flex items-center justify-between py-3 border-b border-slate-200">
                     <div class="text-sm">Card Balance</div>
                     <div v-show="loading" class="animate-pulse h-3 w-14 bg-slate-200 rounded"></div>
-                    <div v-show="!loading" class="text-sm font-medium text-slate-800 ml-2">{{ formatCurrency(storeBalance.userAvailableBalance / 100) }}</div>
+                    <div v-show="!loading" class="text-sm font-medium text-slate-800 ml-2">{{ formatCurrency(storeBalance.userAccountBalance) }}</div>
                   </li>
                   <li class="flex items-center justify-between py-3 border-b border-slate-200">
                     <div class="text-sm">Subscription</div>

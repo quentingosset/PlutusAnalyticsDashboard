@@ -1,5 +1,6 @@
 import rewards from '../data/rewards.json';
 import cards from '../data/cards.json';
+import cardsV3 from '../data/cardsv3.json';
 import subscription from '../data/subscription.json';
 import statements from '../data/statements.json';
 import withdrawals from '../data/withdrawals.json';
@@ -58,6 +59,27 @@ export async function getPlutusCard() {
     }
 }
 
+export async function getPlutusCardV3() {
+    if(import.meta.env.MODE === "production") {
+        var header = new Headers();
+        header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
+
+        var requestOptions = {
+            method: 'GET',
+            headers: header,
+            redirect: 'follow'
+        };
+
+        return await fetch("https://api.plutus.it/v3/cards", requestOptions)
+            .then(response => response.json())
+            .then(jsonResponse => {
+                return jsonResponse.data[0];
+            })
+            .catch(err => console.warn(err));
+    }else{
+        return _.cloneDeep(cardsV3.data[0]);
+    }
+}
 
 export async function getStatements() {
     if(import.meta.env.MODE === "production") {
@@ -137,21 +159,24 @@ export async function getBalance() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
         header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
+        header.append("Content-Type", "application/json");
 
+        var payload = "{\"operationName\":\"getBalance\",\"variables\":{\"currency\":\"EUR\"},\"query\":\"query getBalance($currency: enum_fiat_balance_currency!) {\\n  fiat_balance(where: {currency: {_eq: $currency}}) {\\n    id\\n    user_id\\n    currency\\n    amount\\n    created_at\\n    updated_at\\n    __typename\\n  }\\n  card_transactions_aggregate(\\n    where: {type: {_eq: \\\"AUTHORISATION\\\"}, status: {_eq: \\\"APPROVED\\\"}}\\n  ) {\\n    aggregate {\\n      sum {\\n        billing_amount\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n\"}";
         var requestOptions = {
-            method: 'GET',
+            method: 'POST',
             headers: header,
+            body: payload,
             redirect: 'follow'
         };
 
-        return await fetch("https://api.plutus.it/platform/consumer/balance", requestOptions)
+        return await fetch("https://hasura.plutus.it/v1alpha1/graphql", requestOptions)
             .then(response => response.json())
             .then(jsonResponse => {
-                return jsonResponse;
+                return jsonResponse.data;
             })
             .catch(err => console.warn(err));
     }else{
-        return _.cloneDeep(balance);
+        return _.cloneDeep(balance.data);
     }
 }
 
@@ -227,11 +252,27 @@ export async function getAllStatements(){
     let statements = await getStatements();
     let rewards = await getRewards();
     let withdrawals = await getWithdrawals();
+    let allPerks = await getAllPerks();
     let bonus = rewards.filter((reward) => reward.type === "REBATE_BONUS");
     let result = statements.map((value) => {
+        /*if(value.is_debit){
+            value.amount = "0.00";
+            console.log(value);
+        }*/
+        value.amount = Math.abs(value.amount);
+
         let rewardList = rewards.filter((valueReward) => {
             return valueReward.reference_id === value.id
         });
+        //perkTransactionsOfCurrentMonth.every(transaction => !isUsedPerk(transaction, perk)))
+        const perkTransactionFound = rewardList.find( reward => reward.reference_type.indexOf('perk') >= 0);
+        if(perkTransactionFound){
+            const isPerk = (transaction, perk) => transaction.reference_type === `perk_${perk.id}_reward`;
+            value.perk = allPerks.find(perk => isPerk(perkTransactionFound, perk));
+        }else{
+            value.perk = null;
+        }
+        //console.log(perkTransactionFound);
 
         value.cashback = rewardList;
 
@@ -280,6 +321,9 @@ const initStatus = (value) => {
     value.reward = {};
     value.reward.tooltip = {};
     value.sortedKeyword = new Set();
+    if(value.perk){
+        value.sortedKeyword.add('perk');
+    }
     if (StatementsType.TOP_UP_ACCOUNT.is([value.type])) {
         value.type = StatementsType.TOP_UP_ACCOUNT;
         value.sortedKeyword.add('top_up_account');

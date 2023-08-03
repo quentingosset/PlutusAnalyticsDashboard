@@ -21,11 +21,11 @@ export const balanceStore = defineStore({
             this.userDebitHoldBalance = 0;
             this.loading = true
             try {
-                const [userAccountBalance, userAvailableBalance, userCreditHoldBalance, userDebitHoldBalance] = await getBalance().then(userBalance => [userBalance.AccountBalance, userBalance.AvailableBalance , userBalance.CreditHoldBalance, userBalance.DebitHoldBalance]);
+                const [userAccountBalance, userAvailableBalance, userCreditHoldBalance, userDebitHoldBalance] = await getBalance().then(userBalance => [(userBalance.fiat_balance[0].amount - userBalance.card_transactions_aggregate.aggregate.sum.billing_amount)]);;
                 this.userAccountBalance = userAccountBalance;
-                this.userAvailableBalance = userAvailableBalance;
-                this.userCreditHoldBalance = userCreditHoldBalance;
-                this.userDebitHoldBalance = userDebitHoldBalance;
+                //this.userAvailableBalance = userAvailableBalance;
+                //this.userCreditHoldBalance = userCreditHoldBalance;
+                //this.userDebitHoldBalance = userDebitHoldBalance;
             } catch (error) {
                 this.error = error
             } finally {

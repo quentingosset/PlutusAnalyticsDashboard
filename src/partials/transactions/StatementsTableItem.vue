@@ -13,8 +13,9 @@
     </td>-->
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <div class="flex items-center text-slate-800">
-        <div class="w-10 h-10 shrink-0 flex items-center justify-center bg-slate-100 rounded-full mr-2 sm:mr-3">
-          <img :src="transaction.type._icon" width="20" height="20" :alt="transaction.type._statementType"/>
+        <div class="w-10 h-10 shrink-0 flex items-center justify-center bg-slate-100 mr-2 sm:mr-3">
+          <img v-if="!transaction.perk" :src="transaction.type._icon" width="20" height="20" :alt="transaction.type._statementType"/>
+          <img v-if="transaction.perk" :src="transaction.perk.image_url" :alt="transaction.type._statementType"/>
         </div>
       </div>
     </td>
@@ -44,7 +45,7 @@
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <Tooltip class="ml-2" size="sm" position="top" :display="Object.keys(transaction.reason).length !== 0 || Object.keys(transaction.releaseDate).length !== 0">
         <template v-slot:content>
-          <div class="inline-flex font-medium rounded-full text-center px-2.5 py-0.5" :class="transaction.status.style">
+          <div class="inline-flex font-medium text-center px-2.5 py-0.5" :class="transaction.status.style">
             {{ transaction.status.text }}
           </div>
         </template>
@@ -121,7 +122,7 @@
                 <div class="text-left font-medium">{{ formatCurrency(cashback.fiat_amount_rewarded / 100) }}</div>
               </td>
               <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                <div class="inline-flex font-medium rounded-full text-center px-2.5 py-0.5 bg-slate-100 text-salte-500">
+                <div class="inline-flex font-medium text-center px-2.5 py-0.5 bg-slate-100 text-salte-500">
                   {{ formatRate(cashback.rebate_rate) }}%
                 </div>
               </td>
@@ -131,7 +132,7 @@
               <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                 <Tooltip class="ml-2" size="lg" position="top" :display="false">
                   <template v-slot:content>
-                    <div class="inline-flex font-medium rounded-full text-center px-2.5 py-0.5" :class=transaction.status.style>{{ transaction.status.text }}</div>
+                    <div class="inline-flex font-medium text-center px-2.5 py-0.5" :class=transaction.status.style>{{ transaction.status.text }}</div>
                   </template>
                   <template  v-slot:tooltip>
                     <p class="text-xs whitespace-nowrap text-left">Reason : {{ transaction.reason.value }}</p>

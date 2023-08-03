@@ -78,6 +78,12 @@
                     <span class="text-sm font-medium ml-2 w-20">Refunded</span>
                   </label>
                 </li>
+                <li class="py-1 px-3">
+                  <label class="flex items-center">
+                    <input type="checkbox" class="form-checkbox" data-sort="perk" checked/>
+                    <span class="text-sm font-medium ml-2 w-20">Perk</span>
+                  </label>
+                </li>
               </ul>
             </div>
               <div class="flex-1">

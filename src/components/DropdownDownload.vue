@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import {onMounted, onUnmounted, ref, watch} from 'vue'
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue'
 import DropdownClassic from "../components/DropdownClassic.vue";
 import {downloadObjectAs} from "../utils/Utils";
 import {ReportsType} from "../utils/ReportsType";
@@ -94,7 +94,7 @@ export default {
         const trigger = ref(null);
         const dropdown = ref(null);
         const dropdownDownload = ref(null);
-        const statements = ref(props.statements);
+        const statements =  computed( () => props.statements);
         const options = ref([
             {
                 id: 0,
