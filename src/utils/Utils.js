@@ -86,7 +86,7 @@ const downloadObjectAsJson = (exportObj, exportName) => {
 const downloadObjectAsCSV = (exportObj, exportName) => {
   const parser = new Parser({
         delimiter: '|',
-        formatters: { number: numberFormatter({ decimals: 3, separator: ',' })}
+        formatters: { number: numberFormatter({ separator: ',' })}
   });
   const csv = parser.parse(exportObj);
   let dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
