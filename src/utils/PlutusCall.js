@@ -115,24 +115,7 @@ export async function getStatementsV2() {
         header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
         header.append("Content-Type", "application/json");
 
-        var payload = "query {\n" +
-            "    card_transactions(limit: 100000, order_by: { order_id:desc }) {\n" +
-            "        account_id\n" +
-            "        api_response\n" +
-            "        billing_amount\n" +
-            "        billing_amount\n" +
-            "        billing_currency\n" +
-            "        card_id\n" +
-            "        created_at\n" +
-            "        description\n" +
-            "        id\n" +
-            "        mcc\n" +
-            "        order_id\n" +
-            "        status\n" +
-            "        type\n" +
-            "        updated_at\n" +
-            "    }\n" +
-            "}";
+        var payload = "{\"query\": \"query { card_transactions(order_by: { order_id:desc }) { account_id api_response billing_amount billing_amount billing_currency card_id created_at description id mcc order_id status type updated_at }}\"}";
 
         var requestOptions = {
             method: 'POST',
@@ -148,7 +131,7 @@ export async function getStatementsV2() {
             })
             .catch(err => console.warn(err));
     }else{
-        return _.cloneDeep(statementsV2.data.card_transactions);
+        return _.cloneDeep(statementsV2.data.transactions_view);
     }
 }
 export async function getWithdrawals() {
@@ -302,6 +285,7 @@ export async function getAllStatements(){
     let result = statements.map((value) => {
         value.amount = Math.abs(value.amount);
         value.card_transactions = statementsV2.find( statement => statement.id === value.id);
+        console.log(value.card_transactions);
         if(value.card_transactions === undefined){
             value.card_transactions = {};
             value.card_transactions.created_at = value.date;
