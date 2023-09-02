@@ -19,11 +19,23 @@
         </div>
       </div>
     </td>
+    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap" v-show="settings.column.mcc">
+      <!--<Tooltip class="ml-2" size="sm" position="top" :display="transaction.card_transactions?.mcc">-->
+      <Tooltip class="ml-2" size="sm" position="top" :display="false">
+        <template v-slot:content>
+          <div class="text-left font-medium" v-if="transaction.card_transactions?.mcc">{{ transaction.card_transactions?.mcc }}</div>
+          <div class="text-left font-medium" v-else>-</div>
+        </template>
+        <template  v-slot:tooltip >
+          <p class="text-xs whitespace-nowrap text-left"></p>
+        </template >
+      </Tooltip>
+    </td>
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <div>{{ transaction.description }}</div>
     </td>
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-      <div>{{ formatDate(transaction.date) }}</div>
+      <div>{{ formatDate(transaction.card_transactions?.created_at) }}</div>
     </td>
     <!--<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <div class="font-medium text-slate-800">{{order.description}}</div>
@@ -194,14 +206,14 @@
 
 </style>
 <script>
-import {computed, ref, toRaw} from 'vue'
-import dayjs from 'dayjs';
+import {computed, ref, toRaw, watch} from 'vue'
 import Tooltip from "../../components/Tooltip.vue";
 import {StatementsType} from "../../utils/StatementsType";
+import {formatCurrency, formatDate} from "../../utils/Utils";
 
 export default {name: 'StatementsTableItem', components: {
     Tooltip
-  }, props: ['statement', 'value', 'selected', 'loading', 'sorted'],
+  }, props: ['statement', 'value', 'selected', 'loading', 'sorted', 'settings'],
   setup(props, context) {
     const checked = computed(() => props.selected.includes(props.value))
     const isLoading = computed(() => props.loading)
@@ -213,6 +225,7 @@ export default {name: 'StatementsTableItem', components: {
     const sortedKeyword = ref(props.statement.sortedKeyword);
     const descriptionOpen = ref(false)
     const debug = statement.value;
+    const settings = ref(props.settings);
 
     const amountColor = () => {
       switch (toRaw(statement.value.type)) {
@@ -235,14 +248,21 @@ export default {name: 'StatementsTableItem', components: {
     }
 
     const transactionTypeText = (tx) => {
-      if (tx === "contis_transactions_partial") {
-        return "Partial Reward";
-      } else if (tx === "contis_transactions") {
-        return "Classic Reward";
-      } else if (tx === "manual_reward") {
-        return "Manual Reward";
-      } else {
-        return "Perk Reward";
+      switch (tx) {
+        case "fiat_transactions": {
+          return "Classic Reward";
+        }
+        case "contis_transactions_partial": {
+          return "Partial Reward";
+        }
+        case "contis_transactions": {
+          return "Classic Reward";
+        }
+        case "manual_reward": {
+          return "Manual Reward";
+        }
+        default:
+          return "Perk Reward";
       }
     }
 
@@ -261,24 +281,8 @@ export default {name: 'StatementsTableItem', components: {
       debug
     }
   }, methods: {
-    toRaw,
-    formatDate(dateString) {
-      const date = dayjs(dateString);
-      // Then specify how you want your dates to be formatted
-      return date.format('DD MMMM YYYY');
-    },
-    formatCurrency(value) {
-      if (isNaN(value)) {
-        return '';
-      }
-
-      var formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: localStorage.getItem('local_currency'),
-        minimumFractionDigits: 2
-      });
-      return formatter.format(value);
-    },
+    formatCurrency,
+    formatDate,
     formatRate(value) {
       if (parseFloat(value) === 0.00) {
         return parseFloat(100).toFixed(2);

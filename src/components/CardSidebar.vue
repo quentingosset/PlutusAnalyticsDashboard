@@ -247,6 +247,7 @@ import {rewardStore} from "../stores/reward";
 import {subscriptionStore} from "../stores/subscription";
 import {statementStore} from "../stores/statement";
 import {perkStore} from "../stores/perk";
+import {formatCurrency, formatDate} from "../utils/Utils";
 
 export default {
   name: 'CardSidebar',
@@ -285,11 +286,8 @@ export default {
     }
   },
   methods: {
-    formatDate(dateString) {
-      const date = dayjs(dateString);
-      // Then specify how you want your dates to be formatted
-      return date.format('D MMMM YYYY, HH:mm');
-    },
+    formatDate,
+    formatCurrency,
     expirationSubscription(subscriptionEnd){
       const dateExpiration = dayjs(subscriptionEnd);
       const dateNow = dayjs();
@@ -301,18 +299,6 @@ export default {
       }else{
         return '<div class="w-2 h-2 rounded-full bg-rose-500"></div>';
       }
-    },
-    formatCurrency(value) {
-      if (isNaN(value)) {
-        return '';
-      }
-
-      var formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: localStorage.getItem('local_currency'),
-        minimumFractionDigits: 2
-      });
-      return formatter.format(value);
     },
     cashbackMonthlyLimitPercent(monthlyReward,cashbackLimit) {
       return `width:${((monthlyReward / cashbackLimit) * 100)}%;`;

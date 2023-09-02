@@ -1,6 +1,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import {Parser} from "@json2csv/plainjs";
 import numberFormatter from "@json2csv/formatters/number";
+import dayjs from "dayjs";
 
 export const tailwindConfig = () => {
   // Tailwind config
@@ -85,8 +86,7 @@ const downloadObjectAsJson = (exportObj, exportName) => {
 
 const downloadObjectAsCSV = (exportObj, exportName) => {
   const parser = new Parser({
-        delimiter: '|',
-        formatters: { number: numberFormatter({ separator: ',' })}
+        delimiter: '|'
   });
   const csv = parser.parse(exportObj);
   let dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
@@ -103,10 +103,16 @@ export const formatCurrency = (value) => {
     return '';
   }
 
-  var formatter = new Intl.NumberFormat('en-US', {
+  var formatter = new Intl.NumberFormat((new Intl.NumberFormat()).resolvedOptions().locale, {
     style: 'currency',
     currency: localStorage.getItem('local_currency'),
     minimumFractionDigits: 2
   });
   return formatter.format(value);
+}
+
+export const formatDate = (dateString) => {
+  const date = dayjs(dateString);
+  // Then specify how you want your dates to be formatted
+  return date.format('D MMMM YYYY, HH:mm');
 }

@@ -3,6 +3,7 @@ import cards from '../data/cards.json';
 import cardsV3 from '../data/cardsv3.json';
 import subscription from '../data/subscription.json';
 import statements from '../data/statements.json';
+import statementsV2 from '../data/statementsV2.json';
 import withdrawals from '../data/withdrawals.json';
 import balance from '../data/balance.json';
 import userPerk from '../data/UserPerk.json';
@@ -11,6 +12,7 @@ import profile from '../data/profile.json';
 import {StatementsType} from "./StatementsType";
 import _ from 'lodash';
 import dayjs from "dayjs";
+import {formatCurrency} from "./Utils";
 
 export async function getRewards() {
     if(import.meta.env.MODE === "production") {
@@ -107,6 +109,48 @@ export async function getStatements() {
     }
 }
 
+export async function getStatementsV2() {
+    if(import.meta.env.MODE === "production") {
+        var header = new Headers();
+        header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
+        header.append("Content-Type", "application/json");
+
+        var payload = "query {\n" +
+            "    card_transactions(limit: 100000, order_by: { order_id:desc }) {\n" +
+            "        account_id\n" +
+            "        api_response\n" +
+            "        billing_amount\n" +
+            "        billing_amount\n" +
+            "        billing_currency\n" +
+            "        card_id\n" +
+            "        created_at\n" +
+            "        description\n" +
+            "        id\n" +
+            "        mcc\n" +
+            "        order_id\n" +
+            "        status\n" +
+            "        type\n" +
+            "        updated_at\n" +
+            "    }\n" +
+            "}";
+
+        var requestOptions = {
+            method: 'POST',
+            headers: header,
+            body: payload,
+            redirect: 'follow'
+        };
+
+        return await fetch("https://hasura.plutus.it/v1alpha1/graphql", requestOptions)
+            .then(response => response.json())
+            .then(jsonResponse => {
+                return jsonResponse.data.transactions_view;
+            })
+            .catch(err => console.warn(err));
+    }else{
+        return _.cloneDeep(statementsV2.data.card_transactions);
+    }
+}
 export async function getWithdrawals() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -250,17 +294,18 @@ export async function getUserProfile() {
 
 export async function getAllStatements(){
     let statements = await getStatements();
+    let statementsV2 = await getStatementsV2();
     let rewards = await getRewards();
     let withdrawals = await getWithdrawals();
     let allPerks = await getAllPerks();
     let bonus = rewards.filter((reward) => reward.type === "REBATE_BONUS");
     let result = statements.map((value) => {
-        /*if(value.is_debit){
-            value.amount = "0.00";
-            console.log(value);
-        }*/
         value.amount = Math.abs(value.amount);
-
+        value.card_transactions = statementsV2.find( statement => statement.id === value.id);
+        if(value.card_transactions === undefined){
+            value.card_transactions = {};
+            value.card_transactions.created_at = value.date;
+        }
         let rewardList = rewards.filter((valueReward) => {
             return valueReward.reference_id === value.id
         });
@@ -278,6 +323,9 @@ export async function getAllStatements(){
 
         // PARTIAL REWARD USE REFERENCE_ID OF DEFAULT CASHBACK TX NOT MAIN TX
         rewardList.map((reward) => {
+            if(reward.fiat_transaction){ // modulr override
+                value.card_transactions = reward.fiat_transaction?.card_transactions;
+            }
             reward.amount = parseFloat(reward.amount);
             reward.rebate_rate = parseFloat(reward.rebate_rate);
             if (reward.rebate_rate === 0.00) {
@@ -455,17 +503,4 @@ const initReward = (value) => {
         value.reward.rate = PLURate;
         value.reward.real = realValue;
     }
-}
-
-function formatCurrency(value){
-    if (isNaN(value)) {
-        return '';
-    }
-
-    var formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: localStorage.getItem('local_currency'),
-        minimumFractionDigits: 2
-    });
-    return formatter.format(value);
 }

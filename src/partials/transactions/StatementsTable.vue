@@ -3,7 +3,8 @@
   <!-- Filters -->
   <div class="sm:flex sm:justify-between sm:items-center mb-5">
     <div class="flex gap-3">
-      <DropdownFilter v-model:sorter="sortedItems" @apply-sort="sortTransactions"/>
+      <DropdownSettings :settings="settings"/>
+      <DropdownFilter :sorter="sortedItems" @apply-sort="sortTransactions"/>
       <DropdownDownload :statements="statementsSorted" />
     </div>
     <Datepicker v-model:date-start="dateStart" v-model:date-end="dateEnd" @refreshFilter="refreshFilter"/>
@@ -38,25 +39,28 @@
                 </label>
               </div>
             </th>-->
-            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+            <th class="px-2 first:pl-3 last:pr-5 py-3 whitespace-nowrap">
               <div class="font-semibold text-left">Type</div>
             </th>
-            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+            <th class="px-2 first:pl-3 py-3 whitespace-nowrap" v-show="settings.column.mcc">
+              <div class="font-semibold text-left">MCC</div>
+            </th>
+            <th class="px-2 py-3 whitespace-nowrap">
               <div class="font-semibold text-left">Description</div>
             </th>
-            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+            <th class="px-2 py-3 whitespace-nowrap">
               <div class="font-semibold text-left">Date</div>
             </th>
-            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+            <th class="px-2 py-3 whitespace-nowrap">
               <div class="font-semibold text-left">Txn Amount</div>
             </th>
-            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+            <th class="px-2 py-3 whitespace-nowrap">
               <div class="font-semibold text-left">Reward</div>
             </th>
-            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+            <th class="px-2 py-3 whitespace-nowrap">
               <div class="font-semibold text-left">Txn Status</div>
             </th>
-            <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+            <th class="px-2 last:pr-3 py-3 whitespace-nowrap">
               <div class="font-semibold text-left">Action</div>
               <span class="sr-only">Menu</span>
             </th>
@@ -70,6 +74,9 @@
                 </td>
                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                     <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
+                </td>
+                <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                  <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
                 </td>
                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                     <div class="animate-pulse h-2 bg-slate-200 rounded"></div>
@@ -95,6 +102,7 @@
               :statement="statement"
               :sorted="sortedItems"
               :loading="isLoading"
+              :settings="settings"
               v-model:selected="selected"
               :value="statement.id"
           />
@@ -115,11 +123,13 @@ import DropdownDownload from "../../components/DropdownDownload.vue";
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import {formatCurrency} from "../../utils/Utils";
+import DropdownSettings from "../../components/DropdownSettings.vue";
 
 dayjs.extend(isBetween);
 export default {
   name: 'StatementsTable',
   components: {
+    DropdownSettings,
     DropdownFilter,
     DropdownDownload,
     StatementsTableItem,
@@ -141,6 +151,11 @@ export default {
     const cashbackAverage = ref(0);
     const statements = computed(() => props.statements);
     const statementsSorted = ref([]);
+    const settings = ref({
+      "column": {
+        "mcc": false
+      }
+    })
     statementsSorted.value = statements.value.filter((value) => dayjs(value.date).isBetween(dateStart.value,dateEnd.value,null, '[]'));
     const checkAll = () => {
       selected.value = []
@@ -176,7 +191,8 @@ export default {
       dateStart,
       dateEnd,
       defaultSortedItem,
-      statementsSorted
+      statementsSorted,
+      settings
     }
   },
   mounted() {

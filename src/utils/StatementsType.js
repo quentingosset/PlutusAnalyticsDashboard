@@ -17,10 +17,10 @@ export class StatementsType {
     static REFUNDED = new StatementsType("REFUNDED", ["35","45"],ImageRefresh);
     static DECLINED = new StatementsType("DECLINED", ["5"],ImageDeclined);
     static IN_VALIDATION = new StatementsType("IN_VALIDATION", ["0","AUTHORISATION"],ImageShop);
-    static COMPLETED = new StatementsType("COMPLETED", ["31"],ImageShop);
-    static REWARDED = new StatementsType("REWARDED", ["31"],ImageShop);
-    static PENDING = new StatementsType("PENDING", ["31"],ImageShop);
-    static NO_REWARD = new StatementsType("NO_REWARD", ["31"],ImageShop);
+    static COMPLETED = new StatementsType("COMPLETED", ["31","CARD_SETTLEMENT"],ImageShop);
+    static REWARDED = new StatementsType("REWARDED", ["31","CARD_SETTLEMENT"],ImageShop);
+    static PENDING = new StatementsType("PENDING", ["31","CARD_SETTLEMENT"],ImageShop);
+    static NO_REWARD = new StatementsType("NO_REWARD", ["31","CARD_SETTLEMENT"],ImageShop);
     static REJECTED = new StatementsType("REJECTED", [],ImageShop);
 
     constructor(name, statementType, icon) {

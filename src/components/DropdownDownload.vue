@@ -141,7 +141,7 @@ export default {
                     let tmp = JSON.parse(JSON.stringify(statements.value));
                     if (ReportsType.STATEMENTS.is(value)) {
                         tmp.map(statement => {
-                            statement.amount = statement.amount/100;
+                            statement.amount = (statement.amount/100).toLocaleString();
                             statement.reward_rate = statement.reward.rate? statement.reward.rate : 0;
                             statement.reward_plu_value = statement.reward.value? statement.reward.value : 0;
                             statement.reward_value = statement.reward.real? statement.reward.real : 0;
