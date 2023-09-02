@@ -127,11 +127,11 @@ export async function getStatementsV2() {
         return await fetch("https://hasura.plutus.it/v1alpha1/graphql", requestOptions)
             .then(response => response.json())
             .then(jsonResponse => {
-                return jsonResponse.data.transactions_view;
+                return jsonResponse.data.card_transactions;
             })
             .catch(err => console.warn(err));
     }else{
-        return _.cloneDeep(statementsV2.data.transactions_view);
+        return _.cloneDeep(statementsV2.data.card_transactions);
     }
 }
 export async function getWithdrawals() {
