@@ -35,7 +35,7 @@
       <div>{{ transaction.description }}</div>
     </td>
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-      <div>{{ formatDate(transaction.card_transactions?.created_at) }}</div>
+      <div>{{ formatDate(transaction.card_transactions? transaction.card_transactions.created_at : transaction.date) }}</div>
     </td>
     <!--<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <div class="font-medium text-slate-800">{{order.description}}</div>
