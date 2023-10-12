@@ -143,7 +143,7 @@ export default {
     const selected = ref([]);
     const sortedItems = ref(new Set());
     const defaultSortedItem = ref(null);
-    const dateStart = ref(dayjs().subtract(1, 'month').subtract(15, 'days').startOf('day'))
+    const dateStart = ref(dayjs().startOf('day').subtract(45, 'days'))
     const dateEnd = ref(dayjs().endOf('day'))
     const pendingReward = ref(0);
     const totalReward = ref(0);
@@ -156,7 +156,7 @@ export default {
         "mcc": false
       }
     })
-    statementsSorted.value = statements.value.filter((value) => dayjs(value.date).isBetween(dateStart.value,dateEnd.value,null, '[]'));
+    statementsSorted.value = statements.value.filter((value) => dayjs(value.cashback.at(0)?value.cashback.at(0).createdAt : value.date).isBetween(dateStart.value,dateEnd.value,null, '[]'));
     const checkAll = () => {
       selected.value = []
       if (!selectAll.value) {
@@ -213,7 +213,7 @@ export default {
         this.dateEnd = dayjs(value[1]).endOf('D');
       }
       let tmp = this.statements;
-      this.statementsSorted = tmp.filter((value) => dayjs(value.date).isBetween(this.dateStart,this.dateEnd,null, '[]'));
+      this.statementsSorted = tmp.filter((value) => dayjs(value.card_transactions? value.card_transactions.created_at : value.date).isBetween(this.dateStart,this.dateEnd,null, '[]'));
     }
   },
 }

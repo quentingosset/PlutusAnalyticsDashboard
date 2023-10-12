@@ -351,6 +351,7 @@ export async function getAllStatements(){
 
     result.map((value) => {return initStatus(value)});
 
+    result = result.sort((a, b) => (dayjs(a.card_transactions? a.card_transactions.created_at : a.date).isAfter(dayjs(b.card_transactions? b.card_transactions.created_at : b.date)) ? -1 : 1))
     return result;
 }
 
