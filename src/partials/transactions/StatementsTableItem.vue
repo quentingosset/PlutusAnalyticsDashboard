@@ -41,7 +41,7 @@
       <div class="font-medium text-slate-800">{{order.description}}</div>
     </td>-->
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-      <div class="text-left font-medium" :class="amountColor()">{{ formatCurrency(transaction.amount / 100) }}</div>
+      <div class="text-left font-medium" :class="amountColor()">{{ formatCurrency(Math.abs(transaction.amount / 100)) }}</div>
     </td>
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <Tooltip class="ml-2" size="sm" position="top" :display="transaction.reward.value > 0">
@@ -249,14 +249,13 @@ export default {name: 'StatementsTableItem', components: {
 
     const transactionTypeText = (tx) => {
       switch (tx) {
-        case "fiat_transactions": {
-          return "Classic Reward";
-        }
-        case "contis_transactions_partial": {
-          return "Partial Reward";
-        }
+        case "fiat_transactions":
         case "contis_transactions": {
           return "Classic Reward";
+        }
+        case "contis_transactions_partial":
+        case "fiat_transactions_partial": {
+          return "Partial Reward";
         }
         case "manual_reward": {
           return "Manual Reward";
