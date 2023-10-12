@@ -148,7 +148,13 @@ export default {
                             statement.type = statement.type._name
                             statement.releaseDate = statement.releaseDate.text
                             statement.reason = statement.reason.value
+                            statement.mcc = statement.card_transactions?.mcc? statement.card_transactions.mcc : '';
+                            statement.perk = statement.perk? statement.perk.label : '';
                             delete statement.user_id;
+                            if (selected.value.value === 'CSV') {
+                              delete statement.card_transactions;
+                              delete statement.cashback;
+                            }
                             delete statement.reward;
                             delete statement.sortedKeyword;
                             delete statement.status;
