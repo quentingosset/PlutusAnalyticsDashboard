@@ -283,9 +283,18 @@ export async function getAllStatements(){
     let allPerks = await getAllPerks();
     let bonus = rewards.filter((reward) => reward.type === "REBATE_BONUS");
     let result = statements.map((value) => {
-        value.amount = Math.abs(value.amount);
+        if(value.model === "ContisTransaction" && StatementsType.REFUNDED.is([value.type])){
+            value.is_debit = false;
+            value.amount = Math.abs(value.amount);
+        }else if(value.model === "ContisTransaction" && value.is_debit){
+            value.amount = -Math.abs(value.amount);
+        }else {
+            value.is_debit = true;
+            if (StatementsType.TOP_UP_ACCOUNT.is([value.type])) {
+                value.is_debit = false;
+            }
+        }
         value.card_transactions = statementsV2.find( statement => statement.id === value.id);
-        console.log(value.card_transactions);
         if(value.card_transactions === undefined){
             value.card_transactions = {};
             value.card_transactions.created_at = value.date;
