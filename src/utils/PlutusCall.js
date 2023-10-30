@@ -366,7 +366,14 @@ const initStatus = (value) => {
     if(value.perk){
         value.sortedKeyword.add('perk');
     }
-    if (StatementsType.TOP_UP_ACCOUNT.is([value.type])) {
+    if(StatementsType.PLUTUS_METAL_CHARGE.is([value.type])){
+        value.type = StatementsType.PLUTUS_METAL_CHARGE;
+        value.sortedKeyword.add('unload_account');
+        value.status.value = 'unload_account';
+        value.status.text = 'Metal Card Purchase';
+        value.status.style = 'bg-slate-100 text-slate-600';
+        value.description = "Metal Card Purchase";
+    } else if (StatementsType.TOP_UP_ACCOUNT.is([value.type])) {
         value.type = StatementsType.TOP_UP_ACCOUNT;
         value.sortedKeyword.add('top_up_account');
         value.status.value = 'top_up_account';

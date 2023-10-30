@@ -2,6 +2,7 @@ import Image29 from "../images/icon-29.svg";
 import ImageDepositFundsReceived from "../images/icon-FUNDS_RECEIVED.svg";
 import ImageDeclined from "../images/icon-DECLINED.svg";
 import ImageShop from "../images/icon-SHOP.svg";
+import ImageMetalCardWithdraw from "../images/icon-metal_card_withdraw.svg";
 import ImageGift from "../images/icon-GIFT.svg";
 import ImageRefresh from "../images/icon-WITHDRAW_FEE.svg";
 import ImageWithdrawAccount from "../images/icon-WITHDRAW_ACCOUNT.svg";
@@ -22,6 +23,7 @@ export class StatementsType {
     static PENDING = new StatementsType("PENDING", ["31","CARD_SETTLEMENT"],ImageShop);
     static NO_REWARD = new StatementsType("NO_REWARD", ["31","CARD_SETTLEMENT"],ImageShop);
     static REJECTED = new StatementsType("REJECTED", [],ImageShop);
+    static PLUTUS_METAL_CHARGE = new StatementsType("PLUTUS_METAL_CHARGE", ["PLUTUS_METAL_CHARGE"],ImageMetalCardWithdraw);
 
     constructor(name, statementType, icon) {
         this._statementType = statementType;
