@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="40" height="40" x="0" y="0" viewBox="0 0 20 40"
-     style="enable-background:new 0 0 40 40" xml:space="preserve" class="">
-    <g xmlns="http://www.w3.org/2000/svg" fill="none" fill-rule="evenodd">
-        <g stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
-            <path d="M26.188 14.938v12.374c0 .621-.504 1.125-1.125 1.125H14.938a1.125 1.125 0 0 1-1.126-1.125V14.938M17.188 14.938v3.374M17.188 23.938v1.125M22.813 14.938v13.5M11.563 11.563h16.874"/>
-        </g>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512"
+     height="512" viewBox="0 0 512 512" xml:space="preserve">
+    <g transform="matrix(25.01 0 0 25.01 256 256)">
+<path style="stroke: rgb(0,0,0); stroke-width: 1.5; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; fill: none; fill-rule: evenodd; opacity: 1;"
+      transform=" translate(-20, -20)"
+      d="M 26.188 14.938 L 26.188 27.312 C 26.188 27.933 25.683999999999997 28.437 25.063 28.437 L 14.938 28.437 C 14.639458224990108 28.437265370571538 14.35305310307293 28.318856086240785 14.141858345953352 28.107848891072468 C 13.930663588833774 27.89684169590415 13.811999882057501 27.61054189295237 13.812000000000001 27.312 L 13.812000000000001 14.938 M 17.188 14.938 L 17.188 18.312 M 17.188 23.938 L 17.188 25.063 M 22.813 14.938 L 22.813 28.438000000000002 M 11.563 11.563 L 28.436999999999998 11.563"
+      stroke-linecap="round"/>
+</g>
 </svg>
-
