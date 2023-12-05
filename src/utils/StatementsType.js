@@ -15,7 +15,7 @@ export class StatementsType {
     static DEX_BUY = new StatementsType("DEX_BUY", ["ORDER_FULFILLED"],ImageRefresh);
     static WITHDRAW_FEE = new StatementsType("WITHDRAW_FEE", ["PLUTUS_WALLET_WITHDRAW_FEE"],ImageRefresh);
     static BONUS = new StatementsType("BONUS", ["REBATE_BONUS"],ImageGift);
-    static REFUNDED = new StatementsType("REFUNDED", ["35","45"],ImageRefresh);
+    static REFUNDED = new StatementsType("REFUNDED", ["35","45","CARD_REFUND"],ImageRefresh);
     static DECLINED = new StatementsType("DECLINED", ["5"],ImageDeclined);
     static IN_VALIDATION = new StatementsType("IN_VALIDATION", ["0","AUTHORISATION"],ImageShop);
     static COMPLETED = new StatementsType("COMPLETED", ["31","CARD_SETTLEMENT"],ImageShop);
