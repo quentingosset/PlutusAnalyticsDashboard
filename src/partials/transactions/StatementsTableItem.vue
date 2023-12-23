@@ -235,6 +235,8 @@ export default {name: 'StatementsTableItem', components: {
         case StatementsType.REFUNDED:
           return 'text-emerald-600'
         case StatementsType.WITHDRAW_ACCOUNT_TO_CARD:
+        case StatementsType.CARD_FEE:
+        case StatementsType.PLUTUS_METAL_CHARGE:
         case StatementsType.WITHDRAW_FEE:
         case StatementsType.DEX_BUY:
         case StatementsType.IN_VALIDATION:

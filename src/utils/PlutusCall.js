@@ -366,12 +366,19 @@ const initStatus = (value) => {
     if(value.perk){
         value.sortedKeyword.add('perk');
     }
-    if(StatementsType.PLUTUS_METAL_CHARGE.is([value.type])){
+    if(StatementsType.CARD_FEE.is([value.type])){
+        value.type = StatementsType.CARD_FEE;
+        value.sortedKeyword.add('unload_account');
+        value.status.value = 'unload_account';
+        value.status.text = 'Card Fee';
+        value.status.style = 'bg-rose-100 text-rose-600';
+        value.description = "Plutus - Card Order Fee";
+    } else if(StatementsType.PLUTUS_METAL_CHARGE.is([value.type])){
         value.type = StatementsType.PLUTUS_METAL_CHARGE;
         value.sortedKeyword.add('unload_account');
         value.status.value = 'unload_account';
         value.status.text = 'Metal Card Purchase';
-        value.status.style = 'bg-slate-100 text-slate-600';
+        value.status.style = 'bg-rose-100 text-rose-600';
         value.description = "Metal Card Purchase";
     } else if (StatementsType.TOP_UP_ACCOUNT.is([value.type])) {
         value.type = StatementsType.TOP_UP_ACCOUNT;
