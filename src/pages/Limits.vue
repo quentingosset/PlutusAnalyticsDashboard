@@ -8,8 +8,7 @@
     <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-white">
 
       <!-- Site header -->
-      <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen"
-              :cardSidebarOpen="storeGlobal.cardSidebarOpen" @toggle-cardsidebar="storeGlobal.cardSidebarOpen = !storeGlobal.cardSidebarOpen" />
+      <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen"/>
 
       <main>
         <div class="relative flex">
@@ -34,7 +33,6 @@
               </div>
             </div>
           </div>
-          <CardSidebar :cardSidebarOpen="storeGlobal.cardSidebarOpen"/>
         </div>
       </main>
 
@@ -46,7 +44,6 @@
 <script>
 import {ref} from 'vue'
 
-import CardSidebar from "../components/CardSidebar.vue";
 import Sidebar from "../partials/Sidebar.vue";
 import Header from '../partials/Header.vue'
 import PerkCard from "../components/PerkCard.vue";
@@ -63,7 +60,6 @@ export default {
   },
   components: {
     LimitChart,
-    CardSidebar,
     PerkCardLoading,
     PerkCard,
     Sidebar,
@@ -76,7 +72,7 @@ export default {
     const storeLimit = limitStore();
     const storeStatement = statementStore();
 
-    storeLimit.fetchSubscription();
+    //storeLimit.fetchSubscription();
     return {
       sidebarOpen,
       storeGlobal,

@@ -8,8 +8,7 @@
     <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-white">
 
       <!-- Site header -->
-      <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen"
-              :cardSidebarOpen="storeGlobal.cardSidebarOpen" @toggle-cardsidebar="storeGlobal.cardSidebarOpen = !storeGlobal.cardSidebarOpen" />
+      <Header :sidebarOpen="sidebarOpen" />
 
       <main>
         <div class="relative flex">
@@ -94,7 +93,6 @@
               </div>
             </div>
           </div>
-          <CardSidebar :cardSidebarOpen="storeGlobal.cardSidebarOpen"/>
         </div>
       </main>
 
@@ -106,7 +104,6 @@
 <script>
 import {ref} from 'vue'
 
-import CardSidebar from "../components/CardSidebar.vue";
 import Sidebar from "../partials/Sidebar.vue";
 import Header from '../partials/Header.vue'
 import PerkCard from "../components/PerkCard.vue";
@@ -119,7 +116,6 @@ import dayjs from "dayjs";
 export default {
   name: 'Perks',
   components: {
-    CardSidebar,
     PerkCardLoading,
     PerkCard,
     Sidebar,
@@ -132,7 +128,7 @@ export default {
     const storeGlobal = globalStore();
     const storePerk = perkStore();
 
-    storePerk.fetchAllPerks();
+    storePerk.fetchData();
 
     return {
       sidebarOpen,

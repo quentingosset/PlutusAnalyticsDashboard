@@ -23,17 +23,6 @@
           <div class="flex items-center justify-between">
             <div class="status-dot status-dot-animated w-2 h-2 rounded-full bg-emerald-500" v-show="versionStatus"></div>
             <div class="text-sm font-medium text-slate-800 ml-2 mr-2 capitalize" id="version"><span v-html="versionText"></span></div>
-            <button class="text-slate-500 hover:text-slate-600"
-                    @click.stop="$emit('toggle-cardsidebar')"
-                    aria-controls="sidebar"
-                    :aria-expanded="cardSidebarOpen">
-              <span class="sr-only">Open sidebar</span>
-              <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="5" width="16" height="2" />
-                <rect x="4" y="11" width="16" height="2" />
-                <rect x="4" y="17" width="16" height="2" />
-              </svg>
-            </button>
           </div>
         </div>
 
@@ -48,7 +37,7 @@ import {getgit} from "../utils/Utils";
 
 export default {
   name: 'Header',
-  props: ['sidebarOpen','cardSidebarOpen'],
+  props: ['sidebarOpen'],
   components: {
   },
   setup() {

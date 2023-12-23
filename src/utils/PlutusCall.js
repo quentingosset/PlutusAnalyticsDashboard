@@ -1,7 +1,7 @@
 import rewards from '../data/rewards.json';
 import cards from '../data/cards.json';
 import cardsV3 from '../data/cardsv3.json';
-import subscription from '../data/subscription.json';
+import subscription from '../data/subscription/subscription.json';
 import statements from '../data/statements.json';
 import statementsV2 from '../data/statementsV2.json';
 import withdrawals from '../data/withdrawals.json';
@@ -9,10 +9,18 @@ import balance from '../data/balance.json';
 import userPerk from '../data/UserPerk.json';
 import perks from '../data/perks.json';
 import profile from '../data/profile.json';
+import redeem_level from '../data/redeem/levels.json';
+import tiers_level from '../data/tiers/levels.json';
+import history from '../data/redeem/history.json';
+import active from '../data/subscription/active.json';
+import plutonBalance from '../data/pluton_balance.json';
+import staking from '../data/tiers/staking.json';
+import redeem from '../data/redeem/redeem.json';
 import {StatementsType} from "./StatementsType";
 import _ from 'lodash';
 import dayjs from "dayjs";
 import {formatCurrency} from "./Utils";
+import {RedeemChoice} from "./enum/Redeem";
 
 export async function getRewards() {
     if(import.meta.env.MODE === "production") {
@@ -34,7 +42,40 @@ export async function getRewards() {
         return _.cloneDeep(rewards);
     }
 }
+export async function getRedeem(active) {
+    var url = null;
+    var json = null;
+    if(active === RedeemChoice.LEVEL){
+        url = new URL("https://api.plutus.it/platform/redeem/levels");
+        json = redeem_level;
+    }
+    if(active === RedeemChoice.HISTORY){
+        url = new URL("https://api.plutus.it/platform/redeem");
+        json = history;
+    }
+    if(active === RedeemChoice.ACTIVE){
+        url = new URL("https://api.plutus.it/platform/redeem/active");
+        json = redeem;
+    }
+    if(import.meta.env.MODE === "production") {
+        var header = new Headers();
+        header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
+        var requestOptions = {
+            method: 'GET',
+            headers: header,
+            redirect: 'follow'
+        };
 
+        return await fetch(url.toString(), requestOptions)
+            .then(response => response.json())
+            .then(jsonResponse => {
+                return jsonResponse;
+            })
+            .catch(err => console.warn(err));
+    }else{
+        return _.cloneDeep(json);
+    }
+}
 export async function getPlutusCard() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -60,7 +101,6 @@ export async function getPlutusCard() {
         return _.cloneDeep(cards.plutus_cards[0]);
     }
 }
-
 export async function getPlutusCardV3() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -82,7 +122,6 @@ export async function getPlutusCardV3() {
         return _.cloneDeep(cardsV3.data[0]);
     }
 }
-
 export async function getStatements() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -108,7 +147,6 @@ export async function getStatements() {
         return _.cloneDeep(statements.data.transactions_view);
     }
 }
-
 export async function getStatementsV2() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -159,7 +197,6 @@ export async function getWithdrawals() {
         return _.cloneDeep(withdrawals.data.pluton_withdraw_requests);
     }
 }
-
 export async function getSubscription() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -181,7 +218,6 @@ export async function getSubscription() {
         return _.cloneDeep(subscription);
     }
 }
-
 export async function getBalance() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -206,8 +242,6 @@ export async function getBalance() {
         return _.cloneDeep(balance.data);
     }
 }
-
-
 export async function getUserPerks() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -229,7 +263,6 @@ export async function getUserPerks() {
         return _.cloneDeep(userPerk);
     }
 }
-
 export async function getAllPerks(){
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -251,8 +284,6 @@ export async function getAllPerks(){
         return _.cloneDeep(perks.perks);
     }
 }
-
-
 export async function getUserProfile() {
     if(import.meta.env.MODE === "production") {
         var header = new Headers();
@@ -274,7 +305,93 @@ export async function getUserProfile() {
         return _.cloneDeep(profile);
     }
 }
+export async function getTiers() {
+    if(import.meta.env.MODE === "production") {
+        var header = new Headers();
+        header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
 
+        var requestOptions = {
+            method: 'GET',
+            headers: header,
+            redirect: 'follow'
+        };
+
+        return await fetch("https://api.plutus.it/platform/staking/levels", requestOptions)
+            .then(response => response.json())
+            .then(jsonResponse => {
+                return jsonResponse;
+            })
+            .catch(err => console.warn(err));
+    }else{
+        return _.cloneDeep(tiers_level);
+    }
+}
+export async function getSubscriptions() {
+    if(import.meta.env.MODE === "production") {
+        var header = new Headers();
+        header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
+
+        var requestOptions = {
+            method: 'GET',
+            headers: header,
+            redirect: 'follow'
+        };
+
+        return await fetch("https://api.plutus.it/platform/subscription/subscription-config/active", requestOptions)
+            .then(response => response.json())
+            .then(jsonResponse => {
+                return jsonResponse;
+            })
+            .catch(err => console.warn(err));
+    }else{
+        return _.cloneDeep(active);
+    }
+}
+export async function getPlutonBalance(){
+    if(import.meta.env.MODE === "production") {
+        var header = new Headers();
+        header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
+        header.append("Content-Type", "application/json");
+
+        var payload = '{"operationName":null,"variables":{},"query":"{\\n  pluton_balance {\\n    amount\\n    available_amount\\n    updated_at\\n    __typename\\n  }\\n}\\n"}';
+        var requestOptions = {
+            method: 'POST',
+            headers: header,
+            body: payload,
+            redirect: 'follow'
+        };
+
+        return await fetch("https://hasura.plutus.it/v1alpha1/graphql", requestOptions)
+            .then(response => response.json())
+            .then(jsonResponse => {
+                return jsonResponse.data.pluton_balance[0];
+            })
+            .catch(err => console.warn(err));
+    }else{
+        return _.cloneDeep(plutonBalance.data.pluton_balance[0]);
+    }
+}
+export async function getStaking() {
+    if(import.meta.env.MODE === "production") {
+        var header = new Headers();
+        header.append("Authorization", "Bearer " + localStorage.getItem('id_token'));
+
+        var requestOptions = {
+            method: 'GET',
+            headers: header,
+            redirect: 'follow'
+        };
+
+        return await fetch("https://api.plutus.it/platform/staking", requestOptions)
+            .then(response => response.json())
+            .then(jsonResponse => {
+                return jsonResponse;
+            })
+            .catch(err => console.warn(err));
+    }else{
+        return _.cloneDeep(staking);
+    }
+}
 export async function getAllStatements(){
     let statements = await getStatements();
     let statementsV2 = await getStatementsV2();
@@ -354,7 +471,6 @@ export async function getAllStatements(){
     result = result.sort((a, b) => (dayjs(a.card_transactions? a.card_transactions.created_at : a.date).isAfter(dayjs(b.card_transactions? b.card_transactions.created_at : b.date)) ? -1 : 1))
     return result;
 }
-
 const initStatus = (value) => {
     value.status = {};
     value.status.tooltip = {};
@@ -489,7 +605,6 @@ const initStatus = (value) => {
 
     initReward(value);
 }
-
 const initReward = (value) => {
     if (value.cashback.length === 0) {
         value.reward.value = 0;

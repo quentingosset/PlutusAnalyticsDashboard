@@ -36,7 +36,7 @@
       <div v-else>-</div>
     </td>
     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-      <div>{{ formatDate(transaction.card_transactions? transaction.card_transactions.created_at : transaction.date) }}</div>
+      <div>{{ formatDate(transaction.card_transactions? transaction.card_transactions.created_at : transaction.date,TRANSACTION_FORMAT_DATE) }}</div>
     </td>
     <!--<td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
       <div class="font-medium text-slate-800">{{order.description}}</div>
@@ -63,7 +63,7 @@
           </div>
         </template>
         <template  v-slot:tooltip v-if="Object.keys(transaction.releaseDate).length !== 0">
-            <p class="text-xs whitespace-nowrap text-left">Reward available on : {{ formatDate(transaction.releaseDate.value) }}</p>
+            <p class="text-xs whitespace-nowrap text-left">Reward available on : {{ formatDate(transaction.releaseDate.value,TRANSACTION_FORMAT_DATE) }}</p>
         </template >
         <template  v-slot:tooltip v-if="Object.keys(transaction.reason).length !== 0">
           <p class="text-xs whitespace-nowrap text-left">{{ transaction.status.tooltip.text }}</p>
@@ -126,7 +126,7 @@
           <template v-for="cashback in transaction.cashback">
             <tr>
               <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                <div>{{ formatDate(cashback.createdAt) }}</div>
+                <div>{{ formatDate(cashback.createdAt,TRANSACTION_FORMAT_DATE) }}</div>
               </td>
               <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                 {{ transactionTypeText(cashback.reference_type) }}
@@ -210,7 +210,7 @@
 import {computed, ref, toRaw, watch} from 'vue'
 import Tooltip from "../../components/Tooltip.vue";
 import {StatementsType} from "../../utils/StatementsType";
-import {formatCurrency, formatDate} from "../../utils/Utils";
+import {formatCurrency, formatDate, TRANSACTION_FORMAT_DATE} from "../../utils/Utils";
 
 export default {name: 'StatementsTableItem', components: {
     Tooltip
@@ -280,7 +280,8 @@ export default {name: 'StatementsTableItem', components: {
       sortedItems,
       sortedKeyword,
       transaction: statement,
-      debug
+      debug,
+      TRANSACTION_FORMAT_DATE
     }
   }, methods: {
     formatCurrency,

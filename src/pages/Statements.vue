@@ -8,8 +8,7 @@
     <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-white">
 
       <!-- Site header -->
-      <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen"
-              :cardSidebarOpen="storeGlobal.cardSidebarOpen" @toggle-cardsidebar="storeGlobal.cardSidebarOpen = !storeGlobal.cardSidebarOpen" />
+      <Header :sidebarOpen="sidebarOpen" @toggle-sidebar="sidebarOpen = !sidebarOpen"/>
 
       <main>
 
@@ -35,7 +34,6 @@
                   <span class="hidden xs:block ml-2">My Perks</span>
                 </button>
               </router-link>
-
             </div>
 
             <div class="space-y-2">
@@ -43,9 +41,6 @@
               <TransactionsTable v-if="storeStatement.statements.length > 0" :statements=storeStatement.statements />
             </div>
           </div>
-
-          <CardSidebar :cardSidebarOpen="storeGlobal.cardSidebarOpen"/>
-
         </div>
 
       </main>
@@ -63,20 +58,20 @@ import {getUserProfile} from "../utils/PlutusCall";
 import TransactionsTable from "../partials/transactions/StatementsTable.vue";
 import Tooltip from "../components/Tooltip.vue";
 import ModalBasic from "../components/ModalBasic.vue";
-import {SubscriptionType} from "../utils/SubscriptionType";
-import CardSidebar from "../components/CardSidebar.vue";
+import {Subscriptions} from "../utils/type/Subscriptions";
 import {statementStore} from "../stores/statement";
 import {globalStore} from "../stores/global";
+import SpendingOverview from "../components/SpendingOverview.vue";
 
 export default {
   name: 'Statements',
     computed: {
         SubscriptionType() {
-            return Object.values(SubscriptionType)
+            return Object.values(Subscriptions)
         }
     },
   components: {
-    CardSidebar,
+    SpendingOverview,
     Sidebar,
     Header,
     TransactionsTable,

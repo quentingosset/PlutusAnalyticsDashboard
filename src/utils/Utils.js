@@ -111,8 +111,26 @@ export const formatCurrency = (value) => {
   return formatter.format(value);
 }
 
-export const formatDate = (dateString) => {
+export const formatNumber = (value) => {
+  if (isNaN(value)) {
+    return '';
+  }
+
+  var formatter = new Intl.NumberFormat((new Intl.NumberFormat()).resolvedOptions().locale, {
+    style: 'decimal',
+    maximumFractionDigits: 2
+  });
+  return formatter.format(value);
+}
+
+export const CHART_FORMAT_DATE = 'YYYY-MM-DD';
+export const TRANSACTION_FORMAT_DATE = 'D MMMM YYYY, HH:mm';
+
+export const formatDate = (dateString, template) => {
   const date = dayjs(dateString);
-  // Then specify how you want your dates to be formatted
-  return date.format('D MMMM YYYY, HH:mm');
+  if(template === null){
+    return date.format('D MMMM YYYY, HH:mm');
+  }else{
+    return date.format(template);
+  }
 }

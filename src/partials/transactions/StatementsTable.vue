@@ -10,21 +10,10 @@
     <Datepicker v-model:date-start="dateStart" v-model:date-end="dateEnd" @refreshFilter="refreshFilter"/>
   </div>
 
+  <SpendingOverview :statements="statementsSorted"/>
+
   <div class="bg-white shadow-lg border border-slate-200 relative">
-    <header class="px-5 py-4">
-      <div class="flex items-center justify-between">
-        <h2 class="font-semibold text-slate-600">All Transactions: <span class="text-slate-800 font-bold">{{ statementsSorted.length }}</span></h2>
-        <div class="flex items-center justify-between">
-          <h2 class="font-medium text-slate-600 mr-2">Total rewards: <span class="text-slate-800 font-bold">{{ totalReward }} PLU</span></h2>
-          <h2 class="font-medium text-slate-600 mr-2">- Pending rewards: <span class="text-slate-800 font-bold">{{ pendingReward }} PLU</span></h2>
-          <h2 class="font-medium text-slate-600 mr-2">- Total cashback: <span class="text-slate-800 font-bold">{{ formatCurrency(totalCashback) }}</span></h2>
-          <h2 class="font-medium text-slate-600 mr-2">- PLU average: <span class="text-slate-800 font-bold">{{ formatCurrency(cashbackAverage) }}</span></h2>
-
-        </div>
-      </div>
-    </header>
     <div>
-
       <!-- Table -->
       <div class="overflow-x-auto">
         <table class="table-auto w-full divide-y divide-slate-200 table-transactions">
@@ -124,11 +113,13 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import {formatCurrency} from "../../utils/Utils";
 import DropdownSettings from "../../components/DropdownSettings.vue";
+import SpendingOverview from "../../components/SpendingOverview.vue";
 
 dayjs.extend(isBetween);
 export default {
   name: 'StatementsTable',
   components: {
+    SpendingOverview,
     DropdownSettings,
     DropdownFilter,
     DropdownDownload,
@@ -145,10 +136,6 @@ export default {
     const defaultSortedItem = ref(null);
     const dateStart = ref(dayjs().startOf('day').subtract(45, 'days'))
     const dateEnd = ref(dayjs().endOf('day'))
-    const pendingReward = ref(0);
-    const totalReward = ref(0);
-    const totalCashback = ref(0);
-    const cashbackAverage = ref(0);
     const statements = computed(() => props.statements);
     const statementsSorted = ref([]);
     const settings = ref({
@@ -157,6 +144,8 @@ export default {
       }
     })
     statementsSorted.value = statements.value.filter((value) => dayjs(value.cashback.at(0)?value.cashback.at(0).createdAt : value.date).isBetween(dateStart.value,dateEnd.value,null, '[]'));
+    isLoading.value = false;
+
     const checkAll = () => {
       selected.value = []
       if (!selectAll.value) {
@@ -168,31 +157,17 @@ export default {
       selectAll.value = statements.value.length === selected.value.length
       emit('change-selection', selected.value)
     });
-
-    watch(statementsSorted, (value, oldValue, onCleanup) => {
-      let tmp = statementsSorted.value;
-      totalReward.value = tmp.map(cashback => cashback.cashback).reduce((sum, cashback) => sum + cashback.reduce((previousSum, cashback) => previousSum + parseFloat(cashback.amount),0),0).toFixed(2);
-      totalCashback.value = tmp.map(cashback => cashback.cashback).reduce((sum, cashback) => sum + cashback.reduce((previousSum, cashback) => previousSum + ((((parseFloat(cashback.fiat_amount_rewarded??0) / 100) * (parseFloat(cashback.rebate_rate)/100))/parseFloat(cashback.amount)) * parseFloat(cashback.amount)),0),0).toFixed(2);
-      cashbackAverage.value = totalCashback.value/totalReward.value;
-      pendingReward.value = tmp.filter(statement => statement.status !== undefined && statement.status.value === 'pending').reduce((sum, statement) => sum +  parseFloat(statement.reward.value),0).toFixed(2);
-      isLoading.value = false;
-    }, {immediate: true});
-
     return {
       selectAll,
       selected,
       checkAll,
       isLoading,
-      totalReward,
-      totalCashback,
-      pendingReward,
-      cashbackAverage,
       sortedItems,
       dateStart,
       dateEnd,
       defaultSortedItem,
       statementsSorted,
-      settings
+      settings,
     }
   },
   mounted() {
