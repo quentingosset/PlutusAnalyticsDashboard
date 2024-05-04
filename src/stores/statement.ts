@@ -1,24 +1,46 @@
 import {defineStore} from 'pinia'
 import {getAllStatements} from "../utils/PlutusCall";
-import dayjs from "dayjs";
 import {StatementsType} from "../utils/StatementsType";
 import {Frequency} from "../utils/Frenquency";
 import {toRaw} from "vue";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+import {sleep} from "../utils/Utils";
 
+dayjs.extend(isBetween);
 export const statementStore = defineStore({
     id: 'statement',
     state: () => ({
         statements: [],
+        updatedAt : null as undefined | number,
+        validUntil : null as undefined | number,
         loading: false,
         error: null
     }),
-    getters:{},
+    getters:{
+        shouldRefresh(state): boolean {
+            return state.validUntil < dayjs().unix();
+        },
+    },
     actions: {
-        async fetchStatements() {
-            this.statements = []
+        async fetchData(){
+            this.loading = true
+            try {
+                await this._fetchStatements();
+                await sleep(1000);
+                this.updatedAt = dayjs().unix();
+                this.validUntil = dayjs().add(15,'minute').unix();
+            } catch (error) {
+                this.error = error
+            } finally {
+                this.loading = false
+            }
+        },
+        async _fetchStatements() {
             this.loading = true
             try {
                 this.statements = await getAllStatements().then((response) => response)
+                await sleep(1000);
             } catch (error) {
                 this.error = error
             } finally {
@@ -85,3 +107,5 @@ export const statementStore = defineStore({
         },
     }
 })
+
+export type StatementStore = ReturnType<typeof statementStore>

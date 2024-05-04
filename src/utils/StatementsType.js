@@ -17,7 +17,8 @@ export class StatementsType {
     static BONUS = new StatementsType("BONUS", ["REBATE_BONUS"],ImageGift);
     static REFUNDED = new StatementsType("REFUNDED", ["35","45","CARD_REFUND"],ImageRefresh);
     static DECLINED = new StatementsType("DECLINED", ["5"],ImageDeclined);
-    static IN_VALIDATION = new StatementsType("IN_VALIDATION", ["0","AUTHORISATION", "CARD_SETTLEMENT"],ImageShop);
+    static IN_VALIDATION = new StatementsType("IN_VALIDATION", ["0","AUTHORISATION"],ImageShop);
+    static CARD_SETTLEMENT = new StatementsType("IN_VALIDATION", ["0","CARD_SETTLEMENT"],ImageShop); // patch plutus script reward problem
     static COMPLETED = new StatementsType("COMPLETED", ["31","CARD_SETTLEMENT"],ImageShop);
     static REWARDED = new StatementsType("REWARDED", ["31","CARD_SETTLEMENT"],ImageShop);
     static PENDING = new StatementsType("PENDING", ["31","CARD_SETTLEMENT"],ImageShop);

@@ -1,7 +1,8 @@
 import {defineStore} from 'pinia'
 import {getStaking, getTiers} from "../utils/PlutusCall";
 import {Tiers} from "../utils/type/Tiers";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
+import {sleep} from "../utils/Utils";
 
 
 export const stakingStore = defineStore({
@@ -14,20 +15,29 @@ export const stakingStore = defineStore({
         totalStaked: 0 as number,
         externalStaked: 0 as number,
         isMaxStakingLevel: false as boolean,
+        updatedAt : null as undefined | number,
+        validUntil : null as undefined | number,
         loading: false as boolean,
         error: null
     }),
-    getters: {},
+    getters: {
+        shouldRefresh(state): boolean {
+            return state.validUntil < dayjs().unix();
+        },
+    },
     actions: {
         async fetchData(){
             this.loading = true
             try {
                 await this._fetchLevels();
                 await this._fetchStaking();
+                await sleep(1000);
             } catch (error) {
                 this.error = error
             } finally {
                 this.loading = false
+                this.updatedAt = dayjs().unix();
+                this.validUntil = dayjs().add(15,'minute').unix();
             }
         },
         async _fetchLevels() {

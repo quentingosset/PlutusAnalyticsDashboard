@@ -8,13 +8,16 @@ import Tabs from "./Tabs.vue";
 import BalanceCard from "./AccountCard.vue";
 import TiersCard from "./TiersCard.vue";
 import PlanCard from "./PlanCard.vue";
+import {computed, ref} from "vue";
 
 export default {
   name: 'AccountOverview',
+  props: ['loading'],
   components: {
     Tabs
   },
   setup(props, context) {
+    const loadingExternalData = computed(() => props.loading);
     const tabList = [
       {
         "name":"Account",
@@ -22,7 +25,8 @@ export default {
         "component": BalanceCard,
         "componentProps": {
           "header": true,
-          "border": false
+          "border": false,
+          "loading": loadingExternalData
         },
         "default": true
       },

@@ -121,8 +121,8 @@
                 </a>
               </li>
             </router-link>
-            <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0" :class="isExactActive && 'bg-slate-900'">
-              <a class="block text-slate-200 hover:text-white truncate transition duration-150" :class="isExactActive && 'hover:text-slate-200'" href="https://plutus.thomasott.fr/" target="_blank" @click="navigate">
+            <li class="px-3 py-2 rounded-sm mb-0.5 last:mb-0">
+              <a class="block text-slate-200 hover:text-white truncate transition duration-150" href="https://plutus.thomasott.fr/" target="_blank">
                 <div class="flex items-center justify-between">
                   <div class="grow flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 h-6 w-6" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -131,7 +131,7 @@
                       <path class="fill-current text-slate-400" d="M12 8a4 4 0 1 1 -3.995 4.2l-.005 -.2l.005 -.2a4 4 0 0 1 3.995 -3.8z" stroke-width="0" fill="currentColor" />
                       <path class="fill-current text-slate-400" d="M13.142 3.09a9.1 9.1 0 0 1 7.848 7.772a1 1 0 0 1 -1.98 .276a7.1 7.1 0 0 0 -6.125 -6.064a7.096 7.096 0 0 0 -6.048 2.136a2 2 0 1 1 -3.831 .939l-.006 -.149l.005 -.15a2 2 0 0 1 2.216 -1.838a9.094 9.094 0 0 1 7.921 -2.922z" stroke-width="0" fill="currentColor" />
                     </svg>
-                    <span class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200" :class="isExactActive && 'text-white'">On-chain stats</span>
+                    <span class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">On-chain stats</span>
                   </div>
                 </div>
               </a>

@@ -1,9 +1,8 @@
 import {defineStore} from 'pinia'
 import {getAllPerks, getUserPerks} from "../utils/PlutusCall";
-import * as dayjs from "dayjs";
-import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import dayjs from "dayjs";
 import {rewardStore} from "./reward";
-import {mergeArrays} from "../utils/Utils";
+import {mergeArrays, sleep} from "../utils/Utils";
 
 const storeReward = rewardStore();
 export const perkStore = defineStore({
@@ -14,6 +13,8 @@ export const perkStore = defineStore({
         perksGranted: 0,
         perksNextMonth: 0,
         availablePerks: 0,
+        updatedAt : null as undefined | number,
+        validUntil : null as undefined | number,
         loading: true as boolean,
         error: null
     }),
@@ -43,7 +44,10 @@ export const perkStore = defineStore({
         },
         nextMonthPerks(){
             return mergeArrays(this.listPerks,this.perksNextMonth,'id');
-        }
+        },
+        shouldRefresh(state): boolean {
+            return state.validUntil < dayjs().unix();
+        },
     },
     actions: {
         async fetchData(){
@@ -51,10 +55,13 @@ export const perkStore = defineStore({
             try {
                 await this._fetchUsersPerks();
                 await this._fetchAllPerks();
+                await sleep(1000);
             } catch (error) {
                 this.error = error
             } finally {
                 this.loading = false
+                this.updatedAt = dayjs().unix();
+                this.validUntil = dayjs().add(15,'minute').unix();
             }
         },
         async _fetchUsersPerks() {

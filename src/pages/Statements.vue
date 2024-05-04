@@ -61,7 +61,6 @@ import ModalBasic from "../components/ModalBasic.vue";
 import {Subscriptions} from "../utils/type/Subscriptions";
 import {statementStore} from "../stores/statement";
 import {globalStore} from "../stores/global";
-import SpendingOverview from "../components/SpendingOverview.vue";
 
 export default {
   name: 'Statements',
@@ -71,7 +70,6 @@ export default {
         }
     },
   components: {
-    SpendingOverview,
     Sidebar,
     Header,
     TransactionsTable,
@@ -80,10 +78,7 @@ export default {
   },
   setup() {
     const sidebarOpen = ref(false)
-
-    const storeGlobal = globalStore()
     const storeStatement = statementStore()
-    storeStatement.fetchStatements();
 
     getUserProfile().then(value => {
       localStorage.setItem('local_currency',value?.local_currency??"USD");
@@ -94,8 +89,7 @@ export default {
 
     return {
       sidebarOpen,
-      storeStatement,
-      storeGlobal
+      storeStatement
     }
   }
 }

@@ -549,6 +549,12 @@ const initStatus = (value) => {
         value.status.value = 'declined';
         value.status.text = 'Declined';
         value.status.style = 'bg-rose-100 text-rose-600';
+    } else if (StatementsType.CARD_SETTLEMENT.is([value.type]) && value.cashback.length === 0 && dayjs(value.date).add(3,'day').endOf('day').isBefore(dayjs())){
+        value.type = StatementsType.NO_REWARD;
+        value.status.value = 'no_reward';
+        value.status.text = 'No Reward';
+        value.status.style = 'bg-slate-100 text-slate-600';
+        value.sortedKeyword.add('no_reward');
     } else if (StatementsType.IN_VALIDATION.is([value.type]) && value.cashback.length === 0) {
         value.type = StatementsType.IN_VALIDATION;
         value.sortedKeyword.add('in_validation');

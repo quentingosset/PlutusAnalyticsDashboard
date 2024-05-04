@@ -1,11 +1,12 @@
-import resolveConfig from 'tailwindcss/resolveConfig';
 import {Parser} from "@json2csv/plainjs";
-import numberFormatter from "@json2csv/formatters/number";
 import dayjs from "dayjs";
+import Config from "../css/tailwind.config";
+import resolveConfig from "tailwindcss/resolveConfig";
 
 export const tailwindConfig = () => {
   // Tailwind config
-  return resolveConfig('./src/css/tailwind.config.js')
+  //return resolveConfig('./src/css/_tailwind.config.js')
+  return resolveConfig(Config)
 }
 
 export async function getgit (owner, repo, path) {
@@ -25,9 +26,9 @@ export async function getgit (owner, repo, path) {
 }
 
 export const hexToRGB = (h) => {
-  let r = 0;
-  let g = 0;
-  let b = 0;
+  let r: string = '0';
+  let g: string = '0';
+  let b: string = '0';
   if (h.length === 4) {
     r = `0x${h[1]}${h[1]}`;
     g = `0x${h[2]}${h[2]}`;
@@ -97,6 +98,8 @@ const downloadObjectAsCSV = (exportObj, exportName) => {
   downloadAnchorNode.click();
   downloadAnchorNode.remove();
 }
+
+export const sleep = async ms => new Promise(r => setTimeout(r, ms));
 
 export const formatCurrency = (value) => {
   if (isNaN(value)) {

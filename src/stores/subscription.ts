@@ -3,6 +3,8 @@ import {getSubscription,getSubscriptions} from "../utils/PlutusCall";
 import {Subscriptions} from "../utils/type/Subscriptions";
 import {LimitType} from "../utils/LimitType";
 import {limitStore} from "./limit";
+import {sleep} from "../utils/Utils";
+import dayjs from "dayjs";
 
 export const subscriptionStore = defineStore({
     id: 'subscription',
@@ -12,10 +14,15 @@ export const subscriptionStore = defineStore({
         subscriptionDesired: null as undefined | Subscriptions,
         subscriptionEnd: null as undefined | string,
         cashbackLimit: null,
-        loading: false as boolean,
+        updatedAt : null as undefined | number,
+        validUntil : null as undefined | number,
+        loading : false as boolean,
         error: null
     }),
     getters: {
+        shouldRefresh(state): boolean {
+            return state.validUntil < dayjs().unix();
+        },
     },
     actions: {
         async fetchData(){
@@ -23,10 +30,13 @@ export const subscriptionStore = defineStore({
             try {
                 await this._fetchSubscrtiptions();
                 await this._fetchSubscription();
+                await sleep(1000);
             } catch (error) {
                 this.error = error
             } finally {
                 this.loading = false
+                this.updatedAt = dayjs().unix();
+                this.validUntil = dayjs().add(15,'minute').unix();
             }
         },
         async _fetchSubscrtiptions() {

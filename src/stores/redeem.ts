@@ -1,8 +1,9 @@
 import {defineStore} from 'pinia'
 import {getRedeem} from "../utils/PlutusCall";
-import {Subscriptions} from "../utils/type/Subscriptions";
 import {Redeem} from "../utils/type/Redeem";
 import {RedeemChoice} from "../utils/enum/Redeem";
+import {sleep} from "../utils/Utils";
+import dayjs from "dayjs";
 
 export const redeemStore = defineStore({
     id: 'redeem',
@@ -10,10 +11,15 @@ export const redeemStore = defineStore({
         redeemLevel: null as undefined | Redeem[],
         currentRedeem: null as undefined | Redeem,
         redeemHistory: null as undefined | Redeem[],
+        updatedAt : null as undefined | number,
+        validUntil : null as undefined | number,
         loading: false as boolean,
         error: null
     }),
     getters: {
+        shouldRefresh(state): boolean {
+            return state.validUntil < dayjs().unix();
+        },
     },
     actions: {
         async fetchData(){
@@ -21,10 +27,13 @@ export const redeemStore = defineStore({
             try {
                 await this._fetchRedeemLevels();
                 await this._fetchRedeem();
+                await sleep(1000);
             } catch (error) {
                 this.error = error
             } finally {
                 this.loading = false
+                this.updatedAt = dayjs().unix();
+                this.validUntil = dayjs().add(15,'minute').unix();
             }
         },
         async _fetchRedeemLevels() {
